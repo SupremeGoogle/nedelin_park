@@ -625,7 +625,6 @@ body.admin-available .admin-fab{display:flex}
       <div class="rev-track" id="revTrack"></div>
       <button type="button" class="rev-arrow next" id="revNext" aria-label="Следующий отзыв">&#8594;</button>
     </div>
-    <div class="dots" id="revDots"></div>
   </div>
 </section>
 
@@ -964,17 +963,19 @@ body.admin-available .admin-fab{display:flex}
     var track = document.getElementById('revTrack');
     var dotsBox = document.getElementById('revDots');
     var cards = track.children;
-    dotsBox.innerHTML = '';
-    Array.prototype.forEach.call(cards, function(card, i){
-      var d = document.createElement('span');
-      if (i===0) d.classList.add('on');
-      d.addEventListener('click', function(){ card.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'}); });
-      dotsBox.appendChild(d);
-    });
-    track.addEventListener('scroll', function(){
-      var i = Math.round(track.scrollLeft / (cards[0] ? cards[0].offsetWidth + 24 : 1));
-      Array.prototype.forEach.call(dotsBox.children, function(d,j){ d.classList.toggle('on', j===i); });
-    }, {passive:true});
+    if (dotsBox) {
+      dotsBox.innerHTML = '';
+      Array.prototype.forEach.call(cards, function(card, i){
+        var d = document.createElement('span');
+        if (i===0) d.classList.add('on');
+        d.addEventListener('click', function(){ card.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'}); });
+        dotsBox.appendChild(d);
+      });
+      track.addEventListener('scroll', function(){
+        var i = Math.round(track.scrollLeft / (cards[0] ? cards[0].offsetWidth + 24 : 1));
+        Array.prototype.forEach.call(dotsBox.children, function(d,j){ d.classList.toggle('on', j===i); });
+      }, {passive:true});
+    }
 
     var prevBtn = document.getElementById('revPrev');
     var nextBtn = document.getElementById('revNext');
@@ -1446,11 +1447,13 @@ body.admin-available .admin-fab{display:flex}
     s.push(sec('Отзывы',
       fieldText('Заголовок раздела', 'reviews.heading') +
       C.reviews.items.map(function(r,i){
-        return '<div style="border-top:1px dashed #d8d4c4;padding-top:14px;margin-top:14px">' +
+        return '<div style="border-top:1px dashed #d8d4c4;padding-top:14px;margin-top:14px;position:relative">' +
+          '<button type="button" class="delete-rev" data-index="'+i+'" style="position:absolute;right:0;top:14px;background:#c0392b;padding:4px 8px;font-size:12px;color:#fff;border:none;border-radius:2px;cursor:pointer">Удалить отзыв</button>' +
           fieldText('Отзыв '+(i+1)+' — имя', 'reviews.items.'+i+'.name') +
           fieldArea('Отзыв '+(i+1)+' — текст', 'reviews.items.'+i+'.text') +
           fieldImg('Отзыв '+(i+1)+' — фото (необязательно)', 'reviews.items.'+i+'.image') + '</div>';
-      }).join('')
+      }).join('') +
+      '<div style="margin-top:20px;text-align:center"><button type="button" id="btnAddReview" style="background:#27ae60;color:#fff;border:none;padding:8px 16px;border-radius:2px;cursor:pointer;font-weight:600">+ Добавить новый отзыв</button></div>'
     ));
     s.push(sec('Частые вопросы',
       fieldText('Заголовок раздела', 'faq.heading') +
@@ -1479,6 +1482,42 @@ body.admin-available .admin-fab{display:flex}
     });
     document.querySelectorAll('#adminSections [data-path]').forEach(function(inp){
       inp.addEventListener('input', function(){ set(C, inp.getAttribute('data-path'), inp.value); });
+    });
+
+    var addRevBtn = document.getElementById('btnAddReview');
+    if (addRevBtn) {
+      addRevBtn.addEventListener('click', function(){
+        C.reviews.items.push({
+          name: 'Новый гость',
+          text: 'Текст отзыва...',
+          image: ''
+        });
+        render();
+        buildAdmin();
+        document.querySelectorAll('.admin-sec').forEach(function(sec){
+          var btn = sec.querySelector('button');
+          if (btn && btn.textContent.trim() === 'Отзывы') {
+            sec.classList.add('open');
+          }
+        });
+      });
+    }
+
+    document.querySelectorAll('.delete-rev').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = parseInt(btn.getAttribute('data-index'), 10);
+        if (confirm('Вы действительно хотите удалить отзыв ' + (idx + 1) + '?')) {
+          C.reviews.items.splice(idx, 1);
+          render();
+          buildAdmin();
+          document.querySelectorAll('.admin-sec').forEach(function(sec){
+            var btn = sec.querySelector('button');
+            if (btn && btn.textContent.trim() === 'Отзывы') {
+              sec.classList.add('open');
+            }
+          });
+        }
+      });
     });
     document.querySelectorAll('.img-ctrl').forEach(function(ctrl){
       var path = ctrl.getAttribute('data-imgpath');
