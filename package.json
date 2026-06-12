@@ -1,0 +1,10 @@
+{
+  "name": "nedelin-park",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Сайт Nedelin Park: статический index.html + Vercel-функции в /api",
+  "engines": {
+    "node": ">=18.18"
+  }
+}

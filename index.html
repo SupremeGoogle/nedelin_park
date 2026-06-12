@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nedelin Park — сферы у леса | Калининград</title>
+<meta name="description" content="Nedelin Park — уютные сферические дома у леса под Калининградом. Тишина, природа и комфорт.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pine:#142419;
+  --moss:#23402d;
+  --fern:#557d5f;
+  --sage:#9db8a3;
+  --cream:#f4f0e6;
+  --linen:#fbf9f3;
+  --gold:#b3955c;
+  --ink:#1c2620;
+  --display:'Cormorant Garamond', Georgia, serif;
+  --body:'Manrope', system-ui, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);background:var(--linen);line-height:1.65;font-size:16px;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px;position:relative;z-index:2}
+.eyebrow{font-family:var(--body);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--fern);display:block;margin-bottom:14px}
+.section{padding:100px 0;position:relative}
+
+/* заголовок с подчёркиванием-веточкой, рисуется при появлении */
+.section-title{font-size:clamp(30px,4.5vw,46px);color:var(--pine);margin-bottom:40px;letter-spacing:.02em;position:relative;display:inline-block;padding-bottom:16px}
+.section-title::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:100%;background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform 1.1s .25s cubic-bezier(.22,1,.36,1)}
+.rv.in .section-title::after,.section-title.in::after{transform:scaleX(1)}
+
+/* ---------- reveal on scroll ---------- */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s ease}
+.rv.in{opacity:1;transform:none}
+.rv-l{transform:translateX(-40px)}
+.rv-r{transform:translateX(40px)}
+.rv-l.in,.rv-r.in{transform:none}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}.d4{transition-delay:.48s}
+
+@media (prefers-reduced-motion: reduce){
+  .rv,.rv-l,.rv-r{opacity:1;transform:none;transition:none}
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #leafLayer,#flight,.scroll-hint{display:none!important}
+}
+
+/* ---------- падающие листья по всему сайту ---------- */
+#leafLayer{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.leaf{position:absolute;top:-6vh;will-change:transform;animation:leafFall linear infinite}
+.leaf svg{width:100%;height:100%;animation:leafSway ease-in-out infinite alternate;display:block}
+@keyframes leafFall{to{transform:translateY(112vh)}}
+@keyframes leafSway{from{transform:translateX(-26px) rotate(-50deg)}to{transform:translateX(26px) rotate(60deg)}}
+
+/* ---------- маршрут через весь сайт: лист летит по линии при скролле ---------- */
+#flight{position:absolute;top:0;left:0;width:100%;z-index:30;pointer-events:none;overflow:visible}
+#flightBase{fill:none;stroke:#b3955c;stroke-width:1.6;stroke-dasharray:2 9;stroke-linecap:round;opacity:.4}
+#flightProg{fill:none;stroke:#d9b97c;stroke-width:2;stroke-linecap:round;opacity:.95;
+  filter:drop-shadow(0 0 4px rgba(217,185,124,.9)) drop-shadow(0 0 12px rgba(179,149,92,.5))}
+.flight-dot{fill:rgba(179,149,92,.18);stroke:#b3955c;stroke-width:1.2;transition:fill .4s}
+.flight-dot.done{fill:#d9b97c;filter:drop-shadow(0 0 6px rgba(217,185,124,.9))}
+.flight-ring{fill:none;stroke:#d9b97c;stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center}
+.flight-ring.ping{animation:flightPing .9s ease-out}
+@keyframes flightPing{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(2.6)}}
+#flightLeaf{will-change:transform}
+#flightLeaf .leaf-flutter{animation:flutter 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes flutter{from{transform:rotate(-14deg) scale(1)}to{transform:rotate(16deg) scale(1.08)}}
+#flightLeaf.burst .leaf-flutter{animation:leafBurst .7s cubic-bezier(.34,1.56,.64,1)}
+@keyframes leafBurst{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.7) rotate(160deg)}100%{transform:scale(1) rotate(360deg)}}
+#flightLeaf .leaf-glow{animation:glowBreath 2.2s ease-in-out infinite alternate}
+@keyframes glowBreath{from{opacity:.25}to{opacity:.6}}
+/* искорки за листом */
+.spark{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffe9a8;pointer-events:none;z-index:31;
+  animation:sparkFade .9s ease-out forwards;box-shadow:0 0 8px rgba(255,233,168,.9)}
+@keyframes sparkFade{from{opacity:.95;transform:scale(1)}to{opacity:0;transform:scale(.2) translateY(14px)}}
+
+/* ---------- header ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .4s,box-shadow .4s}
+header.scrolled{background:rgba(251,249,243,.94);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(20,36,25,.08)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:var(--display);font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);transition:color .4s;cursor:pointer;display:flex;align-items:center;gap:10px}
+.nav-logo svg{width:20px;height:20px;stroke:var(--gold)}
+.nav-logo svg path{transform-origin:50% 100%;animation:treeSway 5s ease-in-out infinite alternate}
+header.scrolled .nav-logo{color:var(--pine)}
+.nav-links{display:flex;gap:34px}
+.nav-links a{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cream);transition:color .3s;position:relative}
+header.scrolled .nav-links a{color:var(--ink)}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-5px;height:1px;width:0;background:var(--gold);transition:width .35s}
+.nav-links a:hover::after{width:100%}
+@media(max-width:640px){.nav-links{gap:18px}.nav-links a{font-size:10px;letter-spacing:.14em}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(180deg,#0a150e 0%,#0e1b13 40%,#16291c 100%);overflow:hidden;color:var(--cream)}
+.hero-photo{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.4;filter:saturate(.85)}
+.hero-veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 70%,rgba(10,21,14,0) 0%,rgba(10,21,14,.8) 100%)}
+.hero-stars{position:absolute;inset:0 0 50% 0;pointer-events:none}
+.hero-stars circle{fill:#e9f0e4;animation:twinkle ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.1}to{opacity:.9}}
+.hero-svg{position:absolute;inset:auto 0 -2px 0;width:100%;height:48%;pointer-events:none;will-change:transform}
+.hero-inner{position:relative;z-index:5;padding:120px 22px 150px;max-width:780px;will-change:transform}
+.hero-tag{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--sage);margin-bottom:22px;opacity:0;animation:fadeUp 1.2s .3s forwards}
+.hero h1{font-size:clamp(44px,9vw,92px);letter-spacing:.1em;text-transform:uppercase;font-weight:500;opacity:0;animation:fadeUp 1.2s .55s forwards}
+.hero-sub{margin-top:18px;font-size:15px;color:#cfd9cf;font-weight:300;opacity:0;animation:fadeUp 1.2s .8s forwards}
+.hero-btns{margin-top:42px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 1.2s 1.05s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* кнопки с «заливкой» */
+.btn{display:inline-block;position:relative;overflow:hidden;padding:15px 38px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;border:1px solid var(--cream);cursor:pointer;font-family:var(--body);background:transparent;color:var(--cream);z-index:1;transition:color .4s,border-color .4s}
+.btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .45s cubic-bezier(.4,0,.2,1);z-index:-1}
+.btn:hover::before{transform:scaleX(1);transform-origin:left}
+.btn:hover{color:#fff;border-color:var(--gold)}
+.btn-solid{background:var(--cream);color:var(--pine)}
+.btn-dark{background:var(--pine);color:var(--cream);border-color:var(--pine)}
+.scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:6;color:var(--sage);font-size:10px;letter-spacing:.3em;text-transform:uppercase;animation:bob 2.6s infinite ease-in-out}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* светлячки */
+.ff{position:absolute;border-radius:50%;background:#ffe9a8;filter:blur(1px);opacity:0;animation:ff linear infinite;pointer-events:none}
+@keyframes ff{0%{opacity:0;transform:translateY(0)}12%{opacity:.85}50%{opacity:.25}88%{opacity:.7}100%{opacity:0;transform:translateY(-110px)}}
+
+/* купол line-art */
+.dome-draw path,.dome-draw ellipse{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 3.4s 1.2s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.dome-glow{animation:glowPulse 5s 4.5s ease-in-out infinite alternate;opacity:0}
+@keyframes glowPulse{from{opacity:.06}to{opacity:.22}}
+
+/* туман и покачивание деревьев */
+.fog{animation:fogDrift 26s linear infinite alternate}
+.fog2{animation:fogDrift 38s linear infinite alternate-reverse}
+@keyframes fogDrift{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+@keyframes treeSway{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}
+.sway{transform-origin:50% 100%;animation:treeSway 7s ease-in-out infinite alternate}
+.sway-slow{transform-origin:50% 100%;animation:treeSway 11s ease-in-out infinite alternate-reverse}
+
+/* ---------- живые разделители-лес между секциями ---------- */
+.treeline{display:block;width:100%;height:90px;margin:-1px 0}
+.treeline.flip{transform:scaleY(-1)}
+
+/* птицы */
+.bird{position:absolute;z-index:3;pointer-events:none;animation:fly linear forwards}
+.bird svg{width:100%;height:100%}
+.bird path{animation:flap .5s ease-in-out infinite alternate;transform-origin:center}
+@keyframes fly{from{transform:translateX(-10vw)}to{transform:translateX(115vw)}}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.55)}}
+
+/* ---------- about ---------- */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+@media(max-width:840px){.about-grid{grid-template-columns:1fr}}
+.about-lines p{margin-bottom:16px;color:#3c4a40;font-weight:300;font-size:17px}
+.about-media{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:2px}
+.about-media .media-img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s ease}
+.about-media:hover .media-img{transform:scale(1.06)}
+.about-media::after{content:'';position:absolute;inset:14px;border:1px solid rgba(244,240,230,.55);pointer-events:none}
+.corner-branch{position:absolute;width:130px;opacity:.5;pointer-events:none;z-index:1}
+.corner-branch svg{stroke:var(--fern);fill:none}
+
+/* placeholder */
+.ph{width:100%;height:100%;min-height:200px;background:linear-gradient(150deg,#e7e2d2,#d4d8c8);display:flex;align-items:center;justify-content:center}
+.ph svg{width:54px;height:54px;opacity:.45}
+
+/* ---------- rent ---------- */
+.rent{background:var(--pine);color:var(--cream);overflow:hidden}
+.rent .section-title{color:var(--cream)}
+.rent .eyebrow{color:var(--sage)}
+.rent-list{display:grid;gap:0;max-width:760px}
+.rent-item{display:flex;gap:26px;align-items:flex-start;padding:26px 0;border-bottom:1px solid rgba(244,240,230,.14)}
+.rent-item:last-child{border-bottom:none}
+.rent-ico{flex:0 0 48px;height:48px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(179,149,92,.6);border-radius:50%;transition:transform .4s,box-shadow .4s}
+.rent-item:hover .rent-ico{transform:rotate(-8deg) scale(1.08);box-shadow:0 0 0 6px rgba(179,149,92,.12)}
+.rent-ico svg{width:23px;height:23px;stroke:var(--gold);fill:none}
+.rent-ico svg *{stroke-dasharray:120;stroke-dashoffset:120}
+.rent-item.in .rent-ico svg *{animation:draw .8s ease forwards}
+.rent-item p{font-weight:300;color:#dce4dc;padding-top:10px}
+.rent-bg-dome{position:absolute;right:-60px;bottom:-30px;width:380px;opacity:.07;pointer-events:none}
+.rent-bg-dome svg{stroke:var(--cream);fill:none}
+
+/* ---------- houses / price ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+.card{background:#fff;border:1px solid #e8e4d6;border-radius:2px;overflow:hidden;display:flex;flex-direction:column;transition:transform .45s,box-shadow .45s;position:relative}
+.card::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg);transition:left .8s ease;pointer-events:none;z-index:2}
+.card:hover::after{left:130%}
+.card:hover{transform:translateY(-8px);box-shadow:0 22px 46px -18px rgba(20,36,25,.4)}
+.card-img{aspect-ratio:4/3;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .9s}
+.card:hover .card-img img{transform:scale(1.07)}
+.card-body{padding:26px;display:flex;flex-direction:column;flex:1}
+.card-body h3{font-size:26px;color:var(--pine);margin-bottom:8px}
+.card-body p{font-size:14px;color:#56655b;font-weight:300;flex:1}
+.card-price{margin-top:18px;font-family:var(--display);font-size:22px;color:var(--gold)}
+
+/* booking widget */
+.booking-box{margin-top:64px;background:#fff;border:1px solid #e8e4d6;padding:36px 26px;border-radius:2px;position:relative;overflow:hidden}
+.booking-box h3{font-size:24px;color:var(--pine);margin-bottom:18px;text-align:center;position:relative;z-index:2}
+.booking-box>#hr-widget{position:relative;z-index:2}
+.booking-pines{position:absolute;left:0;right:0;bottom:0;height:50px;opacity:.07;pointer-events:none}
+
+/* ---------- reviews ---------- */
+.reviews{background:var(--cream);overflow:hidden}
+.rev-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:14px;-ms-overflow-style:none;scrollbar-width:none}
+.rev-track::-webkit-scrollbar{display:none}
+.rev-card{flex:0 0 min(380px,86%);scroll-snap-align:start;background:#fff;border:1px solid #e8e4d6;padding:30px;border-radius:2px;position:relative;transition:transform .4s,box-shadow .4s}
+.rev-card:hover{transform:translateY(-5px);box-shadow:0 16px 36px -16px rgba(20,36,25,.3)}
+.rev-card .stars{color:var(--gold);letter-spacing:4px;margin-bottom:14px}
+.rev-card .stars span{display:inline-block;opacity:0;transform:scale(0);transition:opacity .3s,transform .4s cubic-bezier(.34,1.6,.64,1)}
+.rev-card.in .stars span{opacity:1;transform:scale(1)}
+.rev-card blockquote{font-weight:300;color:#3c4a40;font-style:italic;font-family:var(--display);font-size:19px;line-height:1.5}
+.rev-card .rev-name{margin-top:18px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--fern)}
+.rev-img{aspect-ratio:16/9;overflow:hidden;margin:-30px -30px 22px;border-bottom:1px solid #e8e4d6}
+.rev-img img{width:100%;height:100%;object-fit:cover}
+.dots{display:flex;gap:10px;justify-content:center;margin-top:22px}
+.dots span{width:8px;height:8px;border-radius:50%;background:#c9c3ae;transition:.3s;cursor:pointer}
+.dots span.on{background:var(--pine);transform:scale(1.25)}
+
+/* ---------- faq ---------- */
+.faq-item{border-bottom:1px solid #ddd8c6}
+.faq-q{width:100%;background:none;border:none;font-family:var(--body);font-size:16px;font-weight:500;color:var(--ink);text-align:left;padding:24px 44px 24px 34px;cursor:pointer;position:relative;transition:color .3s}
+.faq-q:hover{color:var(--moss)}
+.faq-q::before{content:'';position:absolute;left:4px;top:50%;width:14px;height:14px;transform:translateY(-50%);background:var(--fern);clip-path:polygon(50% 0,62% 38%,100% 38%,69% 60%,80% 100%,50% 76%,20% 100%,31% 60%,0 38%,38% 38%);opacity:.55;transition:transform .45s,opacity .3s}
+.faq-item.open .faq-q::before{transform:translateY(-50%) rotate(72deg);opacity:1}
+.faq-q::after{content:'';position:absolute;right:6px;top:50%;width:12px;height:12px;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:translateY(-70%) rotate(45deg);transition:transform .35s}
+.faq-item.open .faq-q::after{transform:translateY(-30%) rotate(-135deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .45s ease}
+.faq-a p{padding:0 0 24px 34px;color:#4a584e;font-weight:300}
+
+/* ---------- contacts ---------- */
+.contacts{background:var(--pine);color:var(--cream);overflow:hidden}
+.contacts .section-title{color:var(--cream)}
+.contacts .eyebrow{color:var(--sage)}
+.con-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:start}
+@media(max-width:840px){.con-grid{grid-template-columns:1fr}}
+.con-line{display:flex;gap:14px;align-items:center;padding:13px 0;border-bottom:1px solid rgba(244,240,230,.12);font-weight:300;color:#dce4dc;transition:padding-left .35s}
+.con-line:hover{padding-left:8px}
+.con-line svg{width:18px;height:18px;stroke:var(--gold);flex:0 0 18px;fill:none}
+.con-imgs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.con-imgs .imgbox{aspect-ratio:1;overflow:hidden;border-radius:2px}
+.con-imgs img{width:100%;height:100%;object-fit:cover;transition:transform .9s}
+.con-imgs .imgbox:hover img{transform:scale(1.07)}
+.moon{position:absolute;top:60px;right:8%;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f3edd9,#cfc6a3);box-shadow:0 0 50px 14px rgba(243,237,217,.18);opacity:.85;animation:moonFloat 9s ease-in-out infinite alternate;pointer-events:none}
+@keyframes moonFloat{from{transform:translateY(0)}to{transform:translateY(14px)}}
+
+/* ---------- footer ---------- */
+footer{background:#0a150e;color:#8da394;padding:0 0 40px;text-align:center;font-size:12px;font-weight:300;position:relative;overflow:hidden}
+.footer-scene{display:block;width:100%;height:110px}
+footer .legal{margin:26px 0 14px;line-height:1.9;position:relative;z-index:2}
+footer .docs{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2}
+footer .docs a{letter-spacing:.14em;text-transform:uppercase;font-size:10px;border-bottom:1px solid rgba(141,163,148,.35);padding-bottom:2px;transition:color .3s}
+footer .docs a:hover{color:var(--cream)}
+.footer-scene circle.star{fill:#e9f0e4;animation:twinkle ease-in-out infinite alternate}
+.footer-scene .win{animation:winGlow 4s ease-in-out infinite alternate}
+@keyframes winGlow{from{opacity:.35}to{opacity:.95}}
+
+/* ================= ADMIN ================= */
+.admin-fab{position:fixed;bottom:20px;right:20px;z-index:90;width:48px;height:48px;border-radius:50%;border:none;background:var(--pine);color:var(--cream);cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+body.admin-available .admin-fab{display:flex}
+.admin-panel{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:#fff;z-index:100;box-shadow:-12px 0 40px rgba(0,0,0,.25);transform:translateX(105%);transition:transform .4s ease;display:flex;flex-direction:column;font-size:14px}
+.admin-panel.open{transform:none}
+.admin-head{padding:18px 22px;background:var(--pine);color:var(--cream);display:flex;justify-content:space-between;align-items:center}
+.admin-head h2{font-size:20px}
+.admin-close{background:none;border:none;color:var(--cream);font-size:26px;cursor:pointer;line-height:1}
+.admin-body{flex:1;overflow-y:auto;padding:20px 22px 100px}
+.admin-sec{border:1px solid #e5e1d3;border-radius:4px;margin-bottom:14px;overflow:hidden}
+.admin-sec>button{width:100%;text-align:left;background:#f6f3ea;border:none;padding:13px 16px;font-weight:600;cursor:pointer;font-family:var(--body);font-size:13px;letter-spacing:.04em;color:var(--pine)}
+.admin-sec-body{display:none;padding:16px}
+.admin-sec.open .admin-sec-body{display:block}
+.admin-field{margin-bottom:14px}
+.admin-field label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#7a7766;margin-bottom:6px}
+.admin-field input[type=text],.admin-field textarea{width:100%;border:1px solid #d8d4c4;border-radius:3px;padding:9px 11px;font-family:var(--body);font-size:14px;background:#fdfcf8}
+.admin-field textarea{min-height:72px;resize:vertical}
+.img-ctrl{display:flex;gap:12px;align-items:center}
+.img-ctrl .thumb{width:64px;height:48px;border:1px solid #d8d4c4;border-radius:3px;background:#eee center/cover no-repeat;flex:0 0 64px}
+.img-ctrl .pickbtn{font-size:12px;padding:8px 14px;border:1px solid var(--pine);background:#fff;color:var(--pine);border-radius:3px;cursor:pointer}
+.img-ctrl .clearbtn{font-size:12px;padding:8px 10px;border:1px solid #c9c4b2;background:#fff;color:#8a8675;border-radius:3px;cursor:pointer}
+.admin-foot{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e1d3;padding:14px 22px;display:flex;gap:10px;flex-wrap:wrap}
+.admin-foot button{flex:1;min-width:120px;padding:12px 10px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;font-family:var(--body)}
+.btn-save{background:var(--pine);color:#fff;border:1px solid var(--pine)}
+.btn-export{background:#fff;color:var(--pine);border:1px solid var(--pine)}
+.btn-reset{background:#fff;color:#a33;border:1px solid #c99}
+.admin-login{padding:40px 26px;text-align:center}
+.admin-login input{width:100%;border:1px solid #d8d4c4;border-radius:3px;padding:11px;margin:16px 0;font-size:15px}
+.admin-login button{width:100%;padding:12px;background:var(--pine);color:#fff;border:none;border-radius:3px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;font-size:12px}
+.admin-note{font-size:12px;color:#8a8675;background:#f6f3ea;border-radius:4px;padding:12px 14px;margin-bottom:16px;line-height:1.6}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:var(--pine);color:#fff;padding:13px 26px;border-radius:4px;font-size:13px;z-index:120;transition:transform .4s;letter-spacing:.04em}
+.toast.show{transform:translate(-50%,0)}
+
+/* ================= BOOKING MODAL ================= */
+.modal{position:fixed;inset:0;z-index:200;background:rgba(10,21,14,.55);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;animation:modalFade .3s ease}
+.modal.open{display:flex}
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+.modal-card{background:var(--linen);max-width:480px;width:100%;border-radius:6px;overflow:hidden;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);max-height:92vh;overflow-y:auto;animation:modalSlide .45s cubic-bezier(.22,1,.36,1);position:relative}
+@keyframes modalSlide{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
+.modal-head{padding:26px 28px 6px;position:relative}
+.modal-head h3{font-family:var(--display);font-size:28px;color:var(--pine);letter-spacing:.02em}
+.modal-head .modal-sub{margin-top:6px;font-size:13px;color:#7a8073;font-weight:300}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;color:var(--pine);font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:rgba(20,36,25,.08)}
+.modal-form{padding:18px 28px 26px;display:grid;gap:12px}
+.modal-form .row{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media(max-width:520px){.modal-form .row{grid-template-columns:1fr}}
+.modal-form label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#56655b;margin-bottom:4px}
+.modal-form input,.modal-form select,.modal-form textarea{width:100%;border:1px solid #d8d4c4;background:#fff;border-radius:3px;padding:11px 13px;font-family:var(--body);font-size:14px;color:var(--ink);transition:border-color .25s,box-shadow .25s}
+.modal-form input:focus,.modal-form select:focus,.modal-form textarea:focus{outline:none;border-color:var(--fern);box-shadow:0 0 0 3px rgba(85,125,95,.18)}
+.modal-form textarea{min-height:80px;resize:vertical}
+.modal-form .honey{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+.modal-submit{margin-top:8px;background:var(--pine);color:var(--cream);border:1px solid var(--pine);padding:14px 22px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;font-family:var(--body);border-radius:3px;transition:background .25s,color .25s;position:relative;overflow:hidden}
+.modal-submit:disabled{opacity:.6;cursor:wait}
+.modal-submit:hover:not(:disabled){background:var(--gold);border-color:var(--gold)}
+.modal-foot{padding:0 28px 22px;font-size:11px;color:#8a8675;line-height:1.6}
+.modal-ok{display:none;padding:38px 28px 36px;text-align:center}
+.modal-ok h4{font-family:var(--display);font-size:26px;color:var(--pine);margin-bottom:10px}
+.modal-ok p{font-size:14px;color:#56655b;font-weight:300}
+.modal-ok .ok-ico{width:64px;height:64px;border-radius:50%;background:rgba(85,125,95,.15);display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--fern)}
+.modal-card.success .modal-form,.modal-card.success .modal-foot,.modal-card.success .modal-head{display:none}
+.modal-card.success .modal-ok{display:block}
+.field-err{font-size:11px;color:#b03a3a;margin-top:4px;display:none}
+.field-err.show{display:block}
+
+/* красивее админка */
+.admin-login{padding:50px 30px;text-align:center}
+.admin-login h3{font-family:var(--display);font-size:26px;color:var(--pine);margin-bottom:6px}
+.admin-login p{font-size:13px;color:#7a8073;font-weight:300}
+</style>
+</head>
+<body>
+
+<!-- ===================== CONTENT JSON (редактируется через админку) ===================== -->
+<script type="application/json" id="site-content">
+{
+  "brand": { "title": "Nedelin Park", "tagline": "сферы у леса · Калининград" },
+  "hero": {
+    "image": "",
+    "subtitle": "Прозрачный купол, сосны над головой и тишина, которую слышно",
+    "btnBook": "Забронировать дом",
+    "btnWrite": "Написать нам"
+  },
+  "about": {
+    "heading": "О нас",
+    "lines": [
+      "Nedelin Park — это камерный парк сферических домов на опушке леса под Калининградом.",
+      "Каждая сфера — уединённое пространство с панорамным куполом: засыпайте под звёздами и просыпайтесь под пение птиц.",
+      "Внутри — большая кровать, тёплый пол, своя ванная комната и всё необходимое для отдыха вдвоём или с семьёй.",
+      "Мы создали место, куда хочется возвращаться: без суеты, без соседей за стеной, наедине с природой."
+    ],
+    "image": ""
+  },
+  "rent": {
+    "heading": "Что входит в аренду",
+    "items": [
+      "Сферический дом с панорамным куполом, спальней и собственной ванной комнатой",
+      "Личная терраса с зоной барбекю: мангал, решётка и дрова для первого вечера",
+      "Постельное бельё, полотенца, косметика, чай и кофе — всё уже на месте",
+      "Парковка у дома и круглосуточная связь с хозяевами парка"
+    ]
+  },
+  "price": {
+    "heading": "Стоимость",
+    "houses": [
+      {
+        "name": "Сфера «Лес»",
+        "desc": "Купол на двоих в первой линии у соснового бора. Панорамное окно на лес, терраса с качелями.",
+        "price": "от 8 000 ₽ / ночь",
+        "image": ""
+      },
+      {
+        "name": "Сфера «Небо»",
+        "desc": "Прозрачный потолок над кроватью — звёзды вместо люстры. Идеально для романтического отдыха.",
+        "price": "от 9 500 ₽ / ночь",
+        "image": ""
+      },
+      {
+        "name": "Сфера «Семейная»",
+        "desc": "Просторный купол до 4 гостей с двумя спальными зонами и большой террасой для завтраков на воздухе.",
+        "price": "от 12 000 ₽ / ночь",
+        "image": ""
+      }
+    ]
+  },
+  "reviews": {
+    "heading": "Отзывы",
+    "items": [
+      {
+        "name": "Анна и Сергей",
+        "text": "Проснуться под куполом, когда над тобой качаются сосны — это что-то невероятное. Уезжать не хотелось совсем.",
+        "image": ""
+      },
+      {
+        "name": "Мария",
+        "text": "Очень чисто, продумано до мелочей, тёплый пол — спасение. Хозяева на связи и невероятно заботливы.",
+        "image": ""
+      },
+      {
+        "name": "Дмитрий",
+        "text": "Отмечали годовщину. Вечером — мангал и тишина, ночью — звёзды через крышу. Лучший подарок жене за годы.",
+        "image": ""
+      }
+    ]
+  },
+  "faq": {
+    "heading": "Частые вопросы",
+    "items": [
+      {
+        "q": "Что нельзя делать на территории?",
+        "a": "Мы просим гостей не шуметь после 23:00, не разводить открытый огонь вне мангальных зон и бережно относиться к лесу: не ломать ветки и не оставлять мусор. Курение внутри сфер запрещено."
+      },
+      {
+        "q": "Можно ли отдыхать с животными?",
+        "a": "Да, мы рады воспитанным питомцам до 10 кг по предварительному согласованию. Пожалуйста, предупредите нас при бронировании — подготовим лежанку и миски."
+      },
+      {
+        "q": "Какие развлечения есть на территории?",
+        "a": "Прогулочные тропы в лесу, зона костра с гамаками, настольные игры в каждой сфере, прокат велосипедов летом. Рядом — озеро для купания и рыбалки."
+      }
+    ]
+  },
+  "contacts": {
+    "heading": "Контакты",
+    "legalName": "ИП Панова Дарья Владимировна",
+    "inn": "ИНН 747444777897",
+    "ogrn": "ОГРН 765888444338822",
+    "email": "00000000@gmail.com",
+    "phone": "+7 (000) 000-00-00",
+    "address": "Калининградская область, у леса",
+    "images": ["", ""]
+  },
+  "footer": {
+    "privacy": "Политика конфиденциальности",
+    "offer": "Договор оферты"
+  }
+}
+</script>
+
+<!-- слой падающих листьев (генерируется скриптом) -->
+<div id="leafLayer" aria-hidden="true"></div>
+
+<!-- маршрут листа через весь сайт (строится скриптом) -->
+<svg id="flight" aria-hidden="true"></svg>
+
+<!-- ===================== HEADER ===================== -->
+<header id="header">
+  <div class="wrap nav">
+    <div class="nav-logo" id="logoBtn">
+      <svg viewBox="0 0 24 24" stroke-width="1.4" fill="none" aria-hidden="true"><path d="M12 2 6 12h3l-4 8h14l-4-8h3L12 2z"/></svg>
+      <span data-t="brand.title">Nedelin Park</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#rent">условия</a>
+      <a href="#about">о нас</a>
+      <a href="#contacts">контакты</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top">
+  <div class="hero-photo" id="heroPhoto"></div>
+  <div class="hero-veil"></div>
+
+  <!-- мерцающие звёзды -->
+  <svg class="hero-stars" id="heroStars" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMin slice" aria-hidden="true"></svg>
+
+  <!-- дальний слой сосен (параллакс от мыши) -->
+  <svg class="hero-svg" id="pinesFar" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="fogG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#cfd9cf" stop-opacity="0"/>
+        <stop offset="1" stop-color="#cfd9cf" stop-opacity=".35"/>
+      </linearGradient>
+    </defs>
+    <g fill="#1d3526" opacity=".8">
+      <path class="sway-slow" d="M0 320V250l30-90 30 90v70z"/><path d="M70 320v-60l26-78 26 78v60z"/><path class="sway" d="M140 320v-75l34-100 34 100v75z"/><path d="M230 320v-55l24-72 24 72v55z"/><path class="sway-slow" d="M300 320v-70l30-88 30 88v70z"/><path d="M380 320v-58l26-80 26 80v58z"/><path class="sway" d="M450 320v-80l36-105 36 105v80z"/><path d="M545 320v-60l26-76 26 76v60z"/><path class="sway-slow" d="M615 320v-72l30-92 30 92v72z"/><path d="M695 320v-55l24-70 24 70v55z"/><path class="sway" d="M760 320v-78l34-102 34 102v78z"/><path d="M850 320v-60l26-78 26 78v60z"/><path class="sway-slow" d="M920 320v-70l30-90 30 90v70z"/><path d="M1000 320v-56l24-74 24 74v56z"/><path class="sway" d="M1065 320v-80l36-106 36 106v80z"/><path d="M1160 320v-62l26-78 26 78v62z"/><path class="sway-slow" d="M1230 320v-72l30-92 30 92v72z"/><path d="M1310 320v-58l26-78 26 78v58z"/><path class="sway" d="M1380 320v-70l30-90 30 90v70z"/>
+    </g>
+    <rect class="fog" x="-100" y="190" width="1640" height="70" fill="url(#fogG)"/>
+  </svg>
+
+  <!-- ближний слой сосен -->
+  <svg class="hero-svg" id="pinesNear" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <g fill="#0a150e">
+      <path class="sway" d="M-20 320v-90l44-120 44 120v90z"/><path d="M90 320v-70l34-95 34 95v70z"/><path class="sway-slow" d="M185 320v-100l50-135 50 135v100z"/><path d="M315 320v-75l38-105 38 105v75z"/><path class="sway" d="M415 320v-90l44-118 44 118v90z"/><path d="M530 320v-68l34-92 34 92v68z"/><path class="sway-slow" d="M625 320v-98l48-130 48 130v98z"/><path d="M750 320v-72l36-100 36 100v72z"/><path class="sway" d="M845 320v-88l44-116 44 116v88z"/><path d="M960 320v-66l34-92 34 92v66z"/><path class="sway-slow" d="M1055 320v-96l48-128 48 128v96z"/><path d="M1180 320v-74l38-102 38 102v74z"/><path class="sway" d="M1280 320v-90l44-118 44 118v90z"/><path d="M1395 320v-68l34-94 34 94v68z"/>
+    </g>
+    <rect class="fog2" x="-100" y="250" width="1640" height="70" fill="url(#fogG)"/>
+  </svg>
+
+  <!-- купол: рисуется линией, окно светится -->
+  <svg class="dome-draw" viewBox="0 0 200 120" aria-hidden="true" style="position:absolute;bottom:7%;left:50%;transform:translateX(-50%);width:min(260px,42vw);z-index:4;opacity:.92">
+    <ellipse class="dome-glow" cx="100" cy="78" rx="58" ry="36" fill="#ffe9a8" style="animation-name:glowPulse"/>
+    <g fill="none" stroke="#b3955c" stroke-width="1.1">
+      <path d="M20 110 A80 80 0 0 1 180 110"/>
+      <path d="M60 110 A40 75 0 0 1 140 110"/>
+      <path d="M90 110 A12 78 0 0 1 110 110"/>
+      <path d="M27 80 H 173"/>
+      <path d="M45 50 H 155"/>
+      <ellipse cx="100" cy="110" rx="84" ry="4"/>
+    </g>
+  </svg>
+
+  <div class="hero-inner" id="heroInner">
+    <div class="hero-tag" data-t="brand.tagline">сферы у леса · Калининград</div>
+    <h1 data-t="brand.title">Nedelin Park</h1>
+    <p class="hero-sub" data-t="hero.subtitle"></p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn btn-solid" data-t="hero.btnBook"></a>
+      <a href="#contacts" class="btn" data-t="hero.btnWrite"></a>
+    </div>
+  </div>
+  <div class="scroll-hint">листайте вниз</div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="section" id="about">
+  <div class="corner-branch" style="top:30px;right:0">
+    <svg viewBox="0 0 130 80" stroke-width="1" aria-hidden="true"><g class="sway-slow" style="transform-origin:130px 0"><path d="M130 4 C 90 10, 60 26, 20 60"/><path d="M104 12 C 100 22, 96 28, 88 34 M86 22 C 84 30, 80 36, 74 42 M66 32 C 62 40, 58 46, 50 52 M46 44 C 44 52, 40 58, 34 62"/></g></svg>
+  </div>
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="rv rv-l">
+        <span class="eyebrow">Nedelin Park</span>
+        <h2 class="section-title" data-t="about.heading">О нас</h2>
+        <div class="about-lines" id="aboutLines"></div>
+      </div>
+      <div class="about-media rv rv-r" id="aboutMedia"></div>
+    </div>
+  </div>
+</section>
+
+<!-- разделитель-лес -->
+<svg class="treeline" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+  <g fill="#142419">
+    <path d="M0 90 V70 Q 360 40 720 60 T 1440 64 V90 Z"/>
+    <path class="sway" d="M120 72 l16-44 16 44z"/><path d="M260 70 l13-36 13 36z"/><path class="sway-slow" d="M420 66 l18-50 18 50z"/><path d="M600 64 l12-34 12 34z"/><path class="sway" d="M760 62 l17-46 17 46z"/><path d="M930 64 l13-36 13 36z"/><path class="sway-slow" d="M1090 64 l18-48 18 48z"/><path d="M1260 66 l13-38 13 38z"/><path class="sway" d="M1370 68 l15-42 15 42z"/>
+  </g>
+</svg>
+
+<!-- ===================== RENT ===================== -->
+<section class="section rent" id="rent" style="margin-top:-1px">
+  <div class="rent-bg-dome" aria-hidden="true">
+    <svg viewBox="0 0 200 120" stroke-width="1"><path d="M20 110 A80 80 0 0 1 180 110"/><path d="M60 110 A40 75 0 0 1 140 110"/><path d="M27 80 H 173"/><path d="M45 50 H 155"/><ellipse cx="100" cy="110" rx="84" ry="4"/></svg>
+  </div>
+  <div class="wrap">
+    <span class="eyebrow rv">Условия</span><br>
+    <h2 class="section-title rv" data-t="rent.heading">Что входит в аренду</h2>
+    <div class="rent-list" id="rentList"></div>
+  </div>
+</section>
+
+<svg class="treeline flip" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+  <g fill="#142419">
+    <path d="M0 90 V70 Q 360 40 720 60 T 1440 64 V90 Z"/>
+    <path d="M180 70 l14-38 14 38z"/><path class="sway" d="M380 66 l17-46 17 46z"/><path d="M560 64 l12-32 12 32z"/><path class="sway-slow" d="M820 62 l18-48 18 48z"/><path d="M1020 64 l13-36 13 36z"/><path class="sway" d="M1240 66 l16-44 16 44z"/>
+  </g>
+</svg>
+
+<!-- ===================== PRICE + BOOKING ===================== -->
+<section class="section" id="price" style="padding-top:70px">
+  <div class="corner-branch" style="top:10px;left:0;transform:scaleX(-1)">
+    <svg viewBox="0 0 130 80" stroke-width="1" aria-hidden="true"><g class="sway" style="transform-origin:130px 0"><path d="M130 4 C 90 10, 60 26, 20 60"/><path d="M104 12 C 100 22, 96 28, 88 34 M86 22 C 84 30, 80 36, 74 42 M66 32 C 62 40, 58 46, 50 52 M46 44 C 44 52, 40 58, 34 62"/></g></svg>
+  </div>
+  <div class="wrap">
+    <span class="eyebrow rv">Дома</span><br>
+    <h2 class="section-title rv" data-t="price.heading">Стоимость</h2>
+    <div class="cards" id="houseCards"></div>
+
+    <div class="booking-box rv" id="booking" style="text-align:center">
+      <h3>Готовы забронировать?</h3>
+      <p style="color:#56655b;font-weight:300;font-size:15px;max-width:480px;margin:0 auto 22px">Оставьте заявку — мы перезвоним в течение часа и подберём свободные даты под ваш отдых.</p>
+      <div class="hero-btns" style="justify-content:center;margin:0;opacity:1;animation:none">
+        <button type="button" class="btn btn-dark" data-open-booking>Оставить заявку</button>
+      </div>
+      <svg class="booking-pines" viewBox="0 0 1440 50" preserveAspectRatio="none" aria-hidden="true">
+        <g fill="#142419"><path d="M40 50 l12-32 12 32z"/><path d="M180 50 l10-26 10 26z"/><path d="M340 50 l13-34 13 34z"/><path d="M520 50 l10-26 10 26z"/><path d="M700 50 l12-32 12 32z"/><path d="M880 50 l10-26 10 26z"/><path d="M1060 50 l13-34 13 34z"/><path d="M1240 50 l10-26 10 26z"/><path d="M1380 50 l12-32 12 32z"/></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REVIEWS ===================== -->
+<section class="section reviews" id="reviews">
+  <div class="wrap">
+    <span class="eyebrow rv">Гости</span><br>
+    <h2 class="section-title rv" data-t="reviews.heading">Отзывы</h2>
+    <div class="rev-track" id="revTrack"></div>
+    <div class="dots" id="revDots"></div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="section" id="faq">
+  <div class="wrap" style="max-width:820px">
+    <span class="eyebrow rv">Помощь</span><br>
+    <h2 class="section-title rv" data-t="faq.heading">Частые вопросы</h2>
+    <div id="faqList" class="rv"></div>
+  </div>
+</section>
+
+<svg class="treeline" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+  <g fill="#142419">
+    <path d="M0 90 V70 Q 360 44 720 62 T 1440 66 V90 Z"/>
+    <path class="sway-slow" d="M100 72 l15-42 15 42z"/><path d="M300 68 l12-32 12 32z"/><path class="sway" d="M500 64 l17-46 17 46z"/><path d="M720 62 l12-32 12 32z"/><path class="sway-slow" d="M940 64 l18-48 18 48z"/><path d="M1150 66 l12-34 12 34z"/><path class="sway" d="M1330 68 l16-44 16 44z"/>
+  </g>
+</svg>
+
+<!-- ===================== CONTACTS ===================== -->
+<section class="section contacts" id="contacts" style="margin-top:-1px">
+  <div class="moon" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow rv">Свяжитесь с нами</span><br>
+    <h2 class="section-title rv" data-t="contacts.heading">Контакты</h2>
+    <div class="con-grid">
+      <div class="rv rv-l">
+        <div class="con-line"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.22a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span data-t="contacts.phone"></span></div>
+        <div class="con-line"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg><span data-t="contacts.email"></span></div>
+        <div class="con-line"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-t="contacts.address"></span></div>
+        <div class="con-line"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span><span data-t="contacts.legalName"></span><br><small style="opacity:.7"><span data-t="contacts.inn"></span> · <span data-t="contacts.ogrn"></span></small></span></div>
+        <div class="hero-btns" style="justify-content:flex-start;animation:none;opacity:1;margin-top:34px">
+          <a id="phoneBtn" href="#" class="btn">Позвонить</a>
+          <a id="mailBtn" href="#" class="btn btn-solid" style="border-color:var(--cream)">Написать</a>
+        </div>
+      </div>
+      <div class="con-imgs rv rv-r" id="conImgs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER (ночная сцена) ===================== -->
+<footer>
+  <svg class="footer-scene" viewBox="0 0 1440 110" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <circle class="star" cx="160" cy="22" r="1.6" style="animation-duration:2.4s"/>
+    <circle class="star" cx="420" cy="14" r="1.2" style="animation-duration:3.4s;animation-delay:.6s"/>
+    <circle class="star" cx="700" cy="26" r="1.8" style="animation-duration:2.8s;animation-delay:1.1s"/>
+    <circle class="star" cx="980" cy="12" r="1.3" style="animation-duration:3.8s;animation-delay:.3s"/>
+    <circle class="star" cx="1260" cy="20" r="1.6" style="animation-duration:2.6s;animation-delay:1.6s"/>
+    <g fill="#10211676">
+      <path class="sway-slow" d="M80 110 l22-60 22 60z"/><path d="M260 110 l16-44 16 44z"/><path class="sway" d="M1120 110 l20-56 20 56z"/><path d="M1300 110 l16-44 16 44z"/>
+    </g>
+    <!-- купол с тёплым окном -->
+    <g transform="translate(660,46)">
+      <path d="M0 64 A60 60 0 0 1 120 64" fill="none" stroke="#b3955c" stroke-width="1"/>
+      <path d="M30 64 A30 56 0 0 1 90 64" fill="none" stroke="#b3955c" stroke-width=".8"/>
+      <ellipse cx="60" cy="64" rx="64" ry="3" fill="none" stroke="#b3955c" stroke-width=".8"/>
+      <ellipse class="win" cx="60" cy="48" rx="16" ry="12" fill="#ffe9a8" opacity=".6"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div class="legal">
+      <span data-t="contacts.legalName"></span><br>
+      <span data-t="contacts.inn"></span> | <span data-t="contacts.ogrn"></span><br>
+      Почта: <span data-t="contacts.email"></span> · Тел: <span data-t="contacts.phone"></span>
+    </div>
+    <div class="docs">
+      <a href="#" data-t="footer.privacy"></a>
+      <a href="#" data-t="footer.offer"></a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== ADMIN ===================== -->
+<button class="admin-fab" id="adminFab" title="Админ-панель" aria-label="Админ-панель">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+</button>
+
+<aside class="admin-panel" id="adminPanel" aria-hidden="true">
+  <div class="admin-head">
+    <h2>Админ-панель</h2>
+    <button class="admin-close" id="adminClose" aria-label="Закрыть">×</button>
+  </div>
+
+  <div class="admin-login" id="adminLogin">
+    <h3>Вход в админ-панель</h3>
+    <p>Введите код доступа</p>
+    <input type="password" id="adminPass" placeholder="код доступа" autocomplete="off">
+    <button id="adminLoginBtn">Войти</button>
+  </div>
+
+  <div class="admin-body" id="adminBody" style="display:none">
+    <div class="admin-note">
+      Меняйте любые тексты, фото и контакты, нажимайте <b>«Сохранить»</b> — изменения сразу появятся у всех посетителей сайта.
+    </div>
+    <div id="adminSections"></div>
+  </div>
+
+  <div class="admin-foot" id="adminFoot" style="display:none">
+    <button class="btn-save" id="btnSave">Сохранить</button>
+    <button class="btn-export" id="btnExport">Скачать резервную копию</button>
+    <button class="btn-reset" id="btnReset">Сбросить</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="filePicker" accept="image/*" hidden>
+
+<!-- ===================== BOOKING MODAL ===================== -->
+<div class="modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+  <div class="modal-card" id="bookingCard">
+    <div class="modal-head">
+      <button type="button" class="modal-close" id="bookingClose" aria-label="Закрыть">×</button>
+      <h3 id="bookingTitle">Забронировать сферу</h3>
+      <div class="modal-sub">Перезвоним в течение часа и забронируем даты под вас</div>
+    </div>
+    <form class="modal-form" id="bookingForm" novalidate>
+      <div>
+        <label for="bk-name">Имя</label>
+        <input id="bk-name" name="name" type="text" autocomplete="name" required>
+        <div class="field-err" data-err="name">Укажите, как к вам обращаться</div>
+      </div>
+      <div>
+        <label for="bk-phone">Телефон</label>
+        <input id="bk-phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel" required>
+        <div class="field-err" data-err="phone">Похоже, телефон записан неверно</div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="bk-in">Заезд</label>
+          <input id="bk-in" name="dateIn" type="date">
+        </div>
+        <div>
+          <label for="bk-out">Выезд</label>
+          <input id="bk-out" name="dateOut" type="date">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="bk-house">Дом</label>
+          <select id="bk-house" name="house">
+            <option value="">— любой —</option>
+          </select>
+        </div>
+        <div>
+          <label for="bk-guests">Гостей</label>
+          <input id="bk-guests" name="guests" type="number" min="1" max="10" value="2">
+        </div>
+      </div>
+      <div>
+        <label for="bk-comment">Комментарий (необязательно)</label>
+        <textarea id="bk-comment" name="comment" placeholder="С животными, праздник, особые пожелания…"></textarea>
+      </div>
+      <!-- honeypot для ботов -->
+      <input class="honey" type="text" name="website" tabindex="-1" autocomplete="off">
+      <button type="submit" class="modal-submit" id="bookingSubmit">Отправить заявку</button>
+    </form>
+    <div class="modal-foot">
+      Отправляя заявку, вы соглашаетесь с <a href="#" data-t="footer.privacy" style="border-bottom:1px solid #b3955c">политикой конфиденциальности</a>.
+    </div>
+    <div class="modal-ok">
+      <div class="ok-ico">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5 9-11"/></svg>
+      </div>
+      <h4>Заявка отправлена</h4>
+      <p>Свяжемся с вами в ближайшее время</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<script>
+(function(){
+  'use strict';
+  var REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var contentEl = document.getElementById('site-content');
+  var DEFAULTS = JSON.parse(contentEl.textContent);
+  // C — текущий контент сайта. Сначала используем встроенный fallback,
+  // затем подменяем его серверной версией из /api/content (если есть KV).
+  var C = JSON.parse(JSON.stringify(DEFAULTS));
+
+  function fetchServerContent(){
+    return fetch('/api/content', { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if (data && typeof data === 'object'){
+          // мержим, чтобы новые поля из дефолтов не терялись
+          C = deepMerge(JSON.parse(JSON.stringify(DEFAULTS)), data);
+          render();
+        }
+      })
+      .catch(function(){ /* офлайн / api недоступна — оставляем дефолты */ });
+  }
+  function deepMerge(base, over){
+    if (Array.isArray(over)) return over.slice();
+    if (over && typeof over === 'object'){
+      var out = Array.isArray(base) ? base.slice() : Object.assign({}, base);
+      Object.keys(over).forEach(function(k){
+        out[k] = deepMerge(base ? base[k] : undefined, over[k]);
+      });
+      return out;
+    }
+    return over === undefined ? base : over;
+  }
+
+  /* ---------- helpers ---------- */
+  function get(obj, path){ return path.split('.').reduce(function(o,k){ return o ? o[k] : undefined; }, obj); }
+  function set(obj, path, val){
+    var keys = path.split('.'); var o = obj;
+    for (var i=0;i<keys.length-1;i++){ o = o[keys[i]]; }
+    o[keys[keys.length-1]] = val;
+  }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  var PH_SVG = '<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="#6f7d6f" stroke-width="1.3"><path d="M12 3 5 14h4l-3 7h12l-3-7h4L12 3z"/></svg></div>';
+  function imgOrPh(src, alt){
+    return src ? '<img src="'+src+'" alt="'+esc(alt||'')+'" loading="lazy">' : PH_SVG;
+  }
+
+  /* ---------- render ---------- */
+  function render(){
+    document.querySelectorAll('[data-t]').forEach(function(el){
+      var v = get(C, el.getAttribute('data-t'));
+      if (v !== undefined) el.textContent = v;
+    });
+    document.title = C.brand.title + ' — ' + C.brand.tagline;
+
+    var hp = document.getElementById('heroPhoto');
+    hp.style.backgroundImage = C.hero.image ? 'url("'+C.hero.image+'")' : 'none';
+
+    document.getElementById('aboutLines').innerHTML =
+      C.about.lines.map(function(l){ return '<p>'+esc(l)+'</p>'; }).join('');
+    document.getElementById('aboutMedia').innerHTML =
+      C.about.image ? '<img class="media-img" src="'+C.about.image+'" alt="О парке">' : PH_SVG;
+
+    var icons = [
+      '<path d="M12 3 4 13h3v8h10v-8h3L12 3z"/>',
+      '<path d="M8 21h8M9 21c-3-4-2-7 1-9-1 3 1 4 2 5 2-2 1-5 0-7 4 2 7 7 4 11"/>',
+      '<path d="M3 11l9-7 9 7M5 9v10h14V9"/><path d="M9 19v-5h6v5"/>',
+      '<path d="M12 21s-7-4.5-7-10a7 7 0 0 1 14 0c0 5.5-7 10-7 10z"/>'
+    ];
+    document.getElementById('rentList').innerHTML =
+      C.rent.items.map(function(t,i){
+        return '<div class="rent-item rv d'+(i%4+1)+'"><div class="rent-ico"><svg viewBox="0 0 24 24" stroke-width="1.4">'+icons[i%icons.length]+'</svg></div><p>'+esc(t)+'</p></div>';
+      }).join('');
+
+    document.getElementById('houseCards').innerHTML =
+      C.price.houses.map(function(h,i){
+        return '<article class="card rv d'+(i%3+1)+'"><div class="card-img">'+imgOrPh(h.image,h.name)+'</div>'+
+          '<div class="card-body"><h3>'+esc(h.name)+'</h3><p>'+esc(h.desc)+'</p>'+
+          '<div class="card-price">'+esc(h.price)+'</div></div></article>';
+      }).join('');
+
+    document.getElementById('revTrack').innerHTML =
+      C.reviews.items.map(function(r,i){
+        var stars = '★★★★★'.split('').map(function(s,j){
+          return '<span style="transition-delay:'+(j*0.1)+'s">'+s+'</span>';
+        }).join('');
+        return '<div class="rev-card rv d'+(i%3+1)+'">'+
+          (r.image ? '<div class="rev-img"><img src="'+r.image+'" alt="" loading="lazy"></div>' : '')+
+          '<div class="stars">'+stars+'</div><blockquote>'+esc(r.text)+'</blockquote>'+
+          '<div class="rev-name">'+esc(r.name)+'</div></div>';
+      }).join('');
+    buildDots();
+
+    document.getElementById('faqList').innerHTML =
+      C.faq.items.map(function(f){
+        return '<div class="faq-item"><button class="faq-q">'+esc(f.q)+'</button>'+
+          '<div class="faq-a"><p>'+esc(f.a)+'</p></div></div>';
+      }).join('');
+    bindFaq();
+
+    document.getElementById('conImgs').innerHTML =
+      C.contacts.images.map(function(src){ return '<div class="imgbox">'+imgOrPh(src,'Территория')+'</div>'; }).join('');
+
+    document.getElementById('phoneBtn').href = 'tel:' + C.contacts.phone.replace(/[^\d+]/g,'');
+    document.getElementById('mailBtn').href = 'mailto:' + C.contacts.email;
+
+    observeReveals();
+  }
+
+  /* ---------- FAQ ---------- */
+  function bindFaq(){
+    document.querySelectorAll('.faq-item').forEach(function(item){
+      item.querySelector('.faq-q').addEventListener('click', function(){
+        var open = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(function(i){
+          i.classList.remove('open'); i.querySelector('.faq-a').style.maxHeight = 0;
+        });
+        if (!open){
+          item.classList.add('open');
+          var a = item.querySelector('.faq-a');
+          a.style.maxHeight = a.scrollHeight + 'px';
+        }
+      });
+    });
+  }
+
+  /* ---------- reviews dots ---------- */
+  function buildDots(){
+    var track = document.getElementById('revTrack');
+    var dotsBox = document.getElementById('revDots');
+    var cards = track.children;
+    dotsBox.innerHTML = '';
+    Array.prototype.forEach.call(cards, function(card, i){
+      var d = document.createElement('span');
+      if (i===0) d.classList.add('on');
+      d.addEventListener('click', function(){ card.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'}); });
+      dotsBox.appendChild(d);
+    });
+    track.addEventListener('scroll', function(){
+      var i = Math.round(track.scrollLeft / (cards[0] ? cards[0].offsetWidth + 24 : 1));
+      Array.prototype.forEach.call(dotsBox.children, function(d,j){ d.classList.toggle('on', j===i); });
+    }, {passive:true});
+  }
+
+  /* ---------- reveal ---------- */
+  var io;
+  function observeReveals(){
+    if (io) io.disconnect();
+    io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---------- header ---------- */
+  var header = document.getElementById('header');
+
+  /* ---------- звёзды в hero ---------- */
+  (function stars(){
+    var svg = document.getElementById('heroStars');
+    svg.innerHTML = '';
+    if (REDUCED) return;
+    var html = '';
+    for (var i=0;i<40;i++){
+      html += '<circle cx="'+(Math.random()*1440).toFixed(0)+'" cy="'+(Math.random()*220).toFixed(0)+'" r="'+(0.6+Math.random()*1.3).toFixed(1)+'" style="animation-duration:'+(2+Math.random()*3).toFixed(1)+'s;animation-delay:'+(Math.random()*3).toFixed(1)+'s"/>';
+    }
+    svg.innerHTML = html;
+  })();
+
+  /* ---------- светлячки (hero + тёмные секции) ---------- */
+  function fireflies(host, count){
+    if (REDUCED) return;
+    host.querySelectorAll('.ff').forEach(function(f){ f.remove(); });
+    for (var i=0;i<count;i++){
+      var f = document.createElement('span');
+      f.className = 'ff';
+      var s = 2 + Math.random()*3;
+      f.style.cssText = 'width:'+s+'px;height:'+s+'px;left:'+(Math.random()*100)+'%;top:'+(30+Math.random()*60)+'%;animation-duration:'+(6+Math.random()*8)+'s;animation-delay:'+(Math.random()*8)+'s;z-index:3';
+      host.appendChild(f);
+    }
+  }
+  fireflies(document.querySelector('.hero'), 14);
+  fireflies(document.querySelector('.rent'), 8);
+  fireflies(document.querySelector('.contacts'), 10);
+
+  /* ---------- падающие листья по всему сайту ---------- */
+  (function leaves(){
+    var layer = document.getElementById('leafLayer');
+    layer.innerHTML = '';
+    if (REDUCED) return;
+    var leafPath = '<svg viewBox="0 0 24 24"><path d="M12 2 C 5 8, 5 16, 12 22 C 19 16, 19 8, 12 2 Z M12 5 V 19" fill="COL" fill-opacity=".5" stroke="COL" stroke-width=".6" stroke-opacity=".7"/></svg>';
+    var cols = ['#557d5f','#7d9a6b','#b3955c','#8fae84'];
+    var n = innerWidth < 700 ? 8 : 14;
+    for (var i=0;i<n;i++){
+      var d = document.createElement('div');
+      d.className = 'leaf';
+      var size = 10 + Math.random()*12;
+      d.style.cssText = 'left:'+(Math.random()*100)+'vw;width:'+size+'px;height:'+size+'px;animation-duration:'+(11+Math.random()*14)+'s;animation-delay:'+(-Math.random()*20)+'s;opacity:'+(0.35+Math.random()*0.4);
+      d.innerHTML = leafPath.split('COL').join(cols[i%cols.length]);
+      d.firstChild.style.animationDuration = (2.5+Math.random()*3)+'s';
+      layer.appendChild(d);
+    }
+  })();
+
+  /* ---------- птицы: иногда пролетают ---------- */
+  (function birds(){
+    if (REDUCED) return;
+    function spawn(){
+      var b = document.createElement('div');
+      b.className = 'bird';
+      var top = 8 + Math.random()*22;
+      var size = 16 + Math.random()*12;
+      var dur = 14 + Math.random()*10;
+      b.style.cssText = 'position:fixed;top:'+top+'vh;left:0;width:'+size+'px;height:'+(size*0.5)+'px;animation-duration:'+dur+'s;z-index:38';
+      b.innerHTML = '<svg viewBox="0 0 24 12"><path d="M2 8 Q 7 1, 12 7 Q 17 1, 22 8" fill="none" stroke="#3c4a40" stroke-width="1.4" stroke-linecap="round"/></svg>';
+      document.body.appendChild(b);
+      setTimeout(function(){ b.remove(); }, dur*1000 + 500);
+    }
+    setTimeout(spawn, 3000);
+    setInterval(function(){ if (Math.random() < .6) spawn(); }, 16000);
+  })();
+
+  /* ---------- маршрут через весь сайт: лист летит по линии ---------- */
+  var SECTION_IDS = ['about','rent','price','reviews','faq','contacts'];
+  var flightSvg = document.getElementById('flight');
+  var flightProg, flightLeaf, flightLen = 0, leafL = 0, targetL = 0,
+      flightDots = [], flightAnim = false, lastDocH = 0;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function buildFlight(){
+    if (REDUCED) return;
+    var docH = document.documentElement.scrollHeight;
+    var W = document.documentElement.clientWidth;
+    lastDocH = docH;
+    flightSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + docH);
+    flightSvg.setAttribute('width', W);
+    flightSvg.setAttribute('height', docH);
+    flightSvg.style.height = docH + 'px';
+
+    // опорные точки: старт под hero, далее зигзагом через секции, финиш у подвала
+    var margin = Math.max(30, W * 0.06);
+    var pts = [{x: W/2, y: innerHeight * 0.92}];
+    SECTION_IDS.forEach(function(id, i){
+      var el = document.getElementById(id);
+      if (!el) return;
+      pts.push({
+        x: (i % 2 === 0) ? W - margin : margin,
+        y: el.offsetTop + Math.min(el.offsetHeight * 0.45, 320)
+      });
+    });
+    pts.push({x: W/2, y: docH - 70});
+
+    // плавная S-кривая через точки
+    var d = 'M' + pts[0].x + ' ' + pts[0].y;
+    for (var i = 1; i < pts.length; i++){
+      var a = pts[i-1], b = pts[i], my = (a.y + b.y) / 2;
+      d += ' C ' + a.x + ' ' + my + ', ' + b.x + ' ' + my + ', ' + b.x + ' ' + b.y;
+    }
+
+    flightSvg.innerHTML =
+      '<path id="flightBase" d="' + d + '"/>' +
+      '<path id="flightProg" d="' + d + '"/>' +
+      '<g id="flightDots"></g>' +
+      '<g id="flightLeaf">' +
+        '<g class="leaf-flutter">' +
+          '<ellipse class="leaf-glow" rx="16" ry="16" fill="#ffe9a8" opacity=".35" style="filter:blur(6px)"/>' +
+          '<path d="M0 -11 C -7 -4, -7 4, 0 11 C 7 4, 7 -4, 0 -11 Z" fill="#d9b97c" stroke="#f4e9c9" stroke-width=".8"/>' +
+          '<path d="M0 -7 V 7" stroke="#8a6f3e" stroke-width=".8" fill="none"/>' +
+        '</g>' +
+      '</g>';
+
+    flightProg = document.getElementById('flightProg');
+    flightLeaf = document.getElementById('flightLeaf');
+    flightLen = flightProg.getTotalLength();
+    flightProg.style.strokeDasharray = flightLen;
+    flightProg.style.strokeDashoffset = flightLen;
+
+    // чекпоинты секций на линии (поиск длины по высоте точки)
+    var dotsG = document.getElementById('flightDots');
+    flightDots = [];
+    pts.slice(1, -1).forEach(function(p){
+      var L = lengthAtY(p.y);
+      var pos = flightProg.getPointAtLength(L);
+      var ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('class', 'flight-ring');
+      ring.setAttribute('cx', pos.x); ring.setAttribute('cy', pos.y); ring.setAttribute('r', 9);
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('class', 'flight-dot');
+      c.setAttribute('cx', pos.x); c.setAttribute('cy', pos.y); c.setAttribute('r', 5.5);
+      dotsG.appendChild(ring); dotsG.appendChild(c);
+      flightDots.push({L: L, dot: c, ring: ring, done: false});
+    });
+
+    leafL = Math.min(leafL, flightLen);
+    placeLeaf(leafL);
+  }
+
+  // бинарный поиск длины дуги по координате Y (линия монотонна по вертикали)
+  function lengthAtY(y){
+    var lo = 0, hi = flightLen;
+    for (var i = 0; i < 22; i++){
+      var mid = (lo + hi) / 2;
+      if (flightProg.getPointAtLength(mid).y < y) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  var sparkT = 0;
+  function placeLeaf(L){
+    var p = flightProg.getPointAtLength(L);
+    var ahead = flightProg.getPointAtLength(Math.min(L + 2, flightLen));
+    var ang = Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180 / Math.PI + 90;
+    flightLeaf.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') rotate(' + ang + ')');
+    flightProg.style.strokeDashoffset = Math.max(0, flightLen - L);
+
+    // чекпоинты: вспышка при пролёте
+    flightDots.forEach(function(o){
+      if (!o.done && L >= o.L){
+        o.done = true;
+        o.dot.classList.add('done');
+        o.ring.classList.remove('ping'); void o.ring.getBoundingClientRect(); o.ring.classList.add('ping');
+        flightLeaf.classList.remove('burst'); void flightLeaf.getBoundingClientRect(); flightLeaf.classList.add('burst');
+        setTimeout(function(){ flightLeaf.classList.remove('burst'); }, 750);
+      } else if (o.done && L < o.L - 30){
+        o.done = false;
+        o.dot.classList.remove('done');
+      }
+    });
+
+    // искорки за летящим листом
+    var now = performance.now();
+    if (now - sparkT > 90 && Math.abs(targetL - leafL) > 4){
+      sparkT = now;
+      var s = document.createElement('span');
+      s.className = 'spark';
+      s.style.left = (p.x + (Math.random()*14 - 7)) + 'px';
+      s.style.top = (p.y + (Math.random()*14 - 7)) + 'px';
+      s.style.position = 'absolute';
+      document.body.appendChild(s);
+      setTimeout(function(){ s.remove(); }, 950);
+    }
+  }
+
+  function flightLoop(){
+    var diff = targetL - leafL;
+    if (Math.abs(diff) < .5){
+      leafL = targetL;
+      placeLeaf(leafL);
+      flightAnim = false;
+      return;
+    }
+    leafL += diff * .085; // мягкая инерция полёта
+    placeLeaf(leafL);
+    requestAnimationFrame(flightLoop);
+  }
+
+  function flightUpdate(y){
+    if (REDUCED || !flightLen) return;
+    if (Math.abs(document.documentElement.scrollHeight - lastDocH) > 60) buildFlight();
+    var docH = document.documentElement.scrollHeight;
+    var f = Math.min(1, Math.max(0, (y + innerHeight * .55) / docH));
+    targetL = lengthAtY(f * docH);
+    if (!flightAnim){ flightAnim = true; requestAnimationFrame(flightLoop); }
+  }
+
+  var flightResizeT;
+  addEventListener('resize', function(){
+    clearTimeout(flightResizeT);
+    flightResizeT = setTimeout(function(){ buildFlight(); requestFrame(); }, 250);
+  });
+
+  /* ---------- единый rAF-обработчик скролла и мыши ---------- */
+  var heroInner = document.getElementById('heroInner');
+  var pinesFar = document.getElementById('pinesFar');
+  var pinesNear = document.getElementById('pinesNear');
+  var mx = 0, ticking = false;
+
+  function onFrame(){
+    ticking = false;
+    var y = scrollY;
+    header.classList.toggle('scrolled', y > 40);
+
+    flightUpdate(y);
+
+    if (REDUCED) return;
+    // параллакс hero
+    var h = innerHeight;
+    if (y < h){
+      var k = y / h;
+      heroInner.style.transform = 'translateY('+(k*70)+'px)';
+      heroInner.style.opacity = 1 - k*1.15;
+      pinesFar.style.transform = 'translate('+(mx*14)+'px,'+(k*46)+'px)';
+      pinesNear.style.transform = 'translate('+(mx*30)+'px,'+(k*20)+'px)';
+    }
+  }
+  function requestFrame(){ if (!ticking){ ticking = true; requestAnimationFrame(onFrame); } }
+  addEventListener('scroll', requestFrame, {passive:true});
+  addEventListener('mousemove', function(e){
+    mx = (e.clientX / innerWidth - .5);
+    if (scrollY < innerHeight) requestFrame();
+  }, {passive:true});
+  requestFrame();
+
+  /* =================================================================
+     ADMIN
+  ================================================================== */
+  var panel = document.getElementById('adminPanel');
+  var fab = document.getElementById('adminFab');
+  var loginBox = document.getElementById('adminLogin');
+  var bodyBox = document.getElementById('adminBody');
+  var footBox = document.getElementById('adminFoot');
+  var authed = false;
+
+  function showAdminEntry(){ document.body.classList.add('admin-available'); }
+  if (location.hash === '#admin') { showAdminEntry(); openPanel(); }
+  addEventListener('hashchange', function(){ if (location.hash==='#admin'){ showAdminEntry(); openPanel(); } });
+  var clicks = 0, clickTimer;
+  document.getElementById('logoBtn').addEventListener('click', function(){
+    clicks++; clearTimeout(clickTimer);
+    clickTimer = setTimeout(function(){ clicks = 0; }, 1600);
+    if (clicks >= 5){ clicks = 0; showAdminEntry(); openPanel(); }
+  });
+
+  function openPanel(){ panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); }
+  function closePanel(){ panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); }
+  fab.addEventListener('click', openPanel);
+  document.getElementById('adminClose').addEventListener('click', closePanel);
+
+  document.getElementById('adminLoginBtn').addEventListener('click', tryLogin);
+  document.getElementById('adminPass').addEventListener('keydown', function(e){ if(e.key==='Enter') tryLogin(); });
+  function showAdminAuthed(){
+    authed = true;
+    loginBox.style.display = 'none';
+    bodyBox.style.display = 'block';
+    footBox.style.display = 'flex';
+    buildAdmin();
+  }
+  function tryLogin(){
+    var btn = document.getElementById('adminLoginBtn');
+    var pass = document.getElementById('adminPass');
+    var code = pass.value.trim();
+    if (!code) { toast('Введите код'); return; }
+    btn.disabled = true; btn.textContent = 'Проверяем…';
+    fetch('/api/admin/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ code: code }),
+      credentials: 'same-origin'
+    }).then(function(r){
+      btn.disabled = false; btn.textContent = 'Войти';
+      if (r.ok){ pass.value=''; showAdminAuthed(); }
+      else { toast('Неверный код'); pass.value=''; pass.focus(); }
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Войти';
+      toast('Сервер недоступен');
+    });
+  }
+  // Если уже авторизованы (есть кука) — сразу открываем редактор.
+  function checkAdminSession(){
+    return fetch('/api/admin/me', { credentials:'same-origin', cache:'no-store' })
+      .then(function(r){ return r.ok ? r.json() : { admin:false }; })
+      .then(function(d){ if (d && d.admin) showAdminAuthed(); })
+      .catch(function(){});
+  }
+
+  /* ----- картинки через проводник + сжатие ----- */
+  var picker = document.getElementById('filePicker');
+  var pickCb = null;
+  picker.addEventListener('change', function(){
+    var file = picker.files[0]; picker.value = '';
+    if (!file || !pickCb) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var img = new Image();
+      img.onload = function(){
+        var MAX = 1600;
+        var w = img.width, h = img.height;
+        if (Math.max(w,h) > MAX){ var k = MAX/Math.max(w,h); w = Math.round(w*k); h = Math.round(h*k); }
+        var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        pickCb(cv.toDataURL('image/jpeg', .82));
+        pickCb = null;
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function fieldText(label, path){
+    return '<div class="admin-field"><label>'+esc(label)+'</label><input type="text" data-path="'+path+'" value="'+esc(get(C,path))+'"></div>';
+  }
+  function fieldArea(label, path){
+    return '<div class="admin-field"><label>'+esc(label)+'</label><textarea data-path="'+path+'">'+esc(get(C,path))+'</textarea></div>';
+  }
+  function fieldImg(label, path){
+    var v = get(C, path);
+    return '<div class="admin-field"><label>'+esc(label)+'</label><div class="img-ctrl" data-imgpath="'+path+'">'+
+      '<div class="thumb" style="'+(v?'background-image:url('+v+')':'')+'"></div>'+
+      '<button type="button" class="pickbtn">Выбрать файл…</button>'+
+      '<button type="button" class="clearbtn">Убрать</button></div></div>';
+  }
+
+  function buildAdmin(){
+    var s = [];
+    s.push(sec('Шапка и главный экран',
+      fieldText('Название', 'brand.title') +
+      fieldText('Подзаголовок (под названием)', 'brand.tagline') +
+      fieldArea('Текст под заголовком', 'hero.subtitle') +
+      fieldText('Кнопка 1', 'hero.btnBook') +
+      fieldText('Кнопка 2', 'hero.btnWrite') +
+      fieldImg('Фоновое фото главного экрана', 'hero.image')
+    ));
+    s.push(sec('О нас',
+      fieldText('Заголовок раздела', 'about.heading') +
+      C.about.lines.map(function(_,i){ return fieldArea('Абзац '+(i+1), 'about.lines.'+i); }).join('') +
+      fieldImg('Фото раздела', 'about.image')
+    ));
+    s.push(sec('Что входит в аренду',
+      fieldText('Заголовок раздела', 'rent.heading') +
+      C.rent.items.map(function(_,i){ return fieldArea('Пункт '+(i+1), 'rent.items.'+i); }).join('')
+    ));
+    s.push(sec('Стоимость — дома',
+      fieldText('Заголовок раздела', 'price.heading') +
+      C.price.houses.map(function(h,i){
+        return '<div style="border-top:1px dashed #d8d4c4;padding-top:14px;margin-top:14px">' +
+          fieldText('Дом '+(i+1)+' — название', 'price.houses.'+i+'.name') +
+          fieldArea('Дом '+(i+1)+' — описание', 'price.houses.'+i+'.desc') +
+          fieldText('Дом '+(i+1)+' — цена', 'price.houses.'+i+'.price') +
+          fieldImg('Дом '+(i+1)+' — фото', 'price.houses.'+i+'.image') + '</div>';
+      }).join('')
+    ));
+    s.push(sec('Отзывы',
+      fieldText('Заголовок раздела', 'reviews.heading') +
+      C.reviews.items.map(function(r,i){
+        return '<div style="border-top:1px dashed #d8d4c4;padding-top:14px;margin-top:14px">' +
+          fieldText('Отзыв '+(i+1)+' — имя', 'reviews.items.'+i+'.name') +
+          fieldArea('Отзыв '+(i+1)+' — текст', 'reviews.items.'+i+'.text') +
+          fieldImg('Отзыв '+(i+1)+' — фото (необязательно)', 'reviews.items.'+i+'.image') + '</div>';
+      }).join('')
+    ));
+    s.push(sec('Частые вопросы',
+      fieldText('Заголовок раздела', 'faq.heading') +
+      C.faq.items.map(function(f,i){
+        return fieldText('Вопрос '+(i+1), 'faq.items.'+i+'.q') + fieldArea('Ответ '+(i+1), 'faq.items.'+i+'.a');
+      }).join('')
+    ));
+    s.push(sec('Контакты',
+      fieldText('Заголовок раздела', 'contacts.heading') +
+      fieldText('Телефон', 'contacts.phone') +
+      fieldText('Почта', 'contacts.email') +
+      fieldText('Адрес', 'contacts.address') +
+      fieldText('Юр. лицо', 'contacts.legalName') +
+      fieldText('ИНН', 'contacts.inn') +
+      fieldText('ОГРН', 'contacts.ogrn') +
+      fieldImg('Фото территории 1', 'contacts.images.0') +
+      fieldImg('Фото территории 2', 'contacts.images.1')
+    ));
+    s.push(sec('Подвал',
+      fieldText('Ссылка 1', 'footer.privacy') +
+      fieldText('Ссылка 2', 'footer.offer')
+    ));
+    document.getElementById('adminSections').innerHTML = s.join('');
+
+    document.querySelectorAll('.admin-sec > button').forEach(function(b){
+      b.addEventListener('click', function(){ b.parentElement.classList.toggle('open'); });
+    });
+    document.querySelectorAll('#adminSections [data-path]').forEach(function(inp){
+      inp.addEventListener('input', function(){ set(C, inp.getAttribute('data-path'), inp.value); });
+    });
+    document.querySelectorAll('.img-ctrl').forEach(function(ctrl){
+      var path = ctrl.getAttribute('data-imgpath');
+      ctrl.querySelector('.pickbtn').addEventListener('click', function(){
+        pickCb = function(dataUrl){
+          set(C, path, dataUrl);
+          ctrl.querySelector('.thumb').style.backgroundImage = 'url('+dataUrl+')';
+          render();
+        };
+        picker.click();
+      });
+      ctrl.querySelector('.clearbtn').addEventListener('click', function(){
+        set(C, path, '');
+        ctrl.querySelector('.thumb').style.backgroundImage = '';
+        render();
+      });
+    });
+  }
+  function sec(title, inner){
+    return '<div class="admin-sec"><button type="button">'+esc(title)+'</button><div class="admin-sec-body">'+inner+'</div></div>';
+  }
+
+  /* ----- save / export / reset ----- */
+  document.getElementById('btnSave').addEventListener('click', function(){
+    var btn = this;
+    btn.disabled = true; var orig = btn.textContent; btn.textContent = 'Сохраняем…';
+    // выбрасываем служебное поле admin.password из старых дампов, если осталось
+    var payload = JSON.parse(JSON.stringify(C));
+    if (payload.admin) delete payload.admin;
+    fetch('/api/content', {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      btn.disabled = false; btn.textContent = orig;
+      if (r.ok){ render(); toast('Сохранено — изменения видны всем'); }
+      else if (r.status === 401){ toast('Сессия истекла — войдите снова'); location.reload(); }
+      else if (r.status === 413){ toast('Слишком большие фото — уменьшите размер'); }
+      else { toast('Не удалось сохранить'); }
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = orig;
+      toast('Сервер недоступен');
+    });
+  });
+
+  document.getElementById('btnExport').addEventListener('click', function(){
+    // Резервная копия контента в JSON.
+    var payload = JSON.parse(JSON.stringify(C));
+    if (payload.admin) delete payload.admin;
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nedelin-park-content-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+    toast('Резервная копия сохранена');
+  });
+
+  document.getElementById('btnReset').addEventListener('click', function(){
+    if (!confirm('Вернуть исходный контент сайта? Текущие правки будут стёрты.')) return;
+    var btn = this; btn.disabled = true;
+    var payload = JSON.parse(JSON.stringify(DEFAULTS));
+    if (payload.admin) delete payload.admin;
+    fetch('/api/content', {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      btn.disabled = false;
+      if (r.ok){
+        C = JSON.parse(JSON.stringify(DEFAULTS));
+        render(); buildAdmin();
+        toast('Контент сброшен к исходному');
+      } else {
+        toast('Не удалось сбросить');
+      }
+    }).catch(function(){ btn.disabled = false; toast('Сервер недоступен'); });
+  });
+
+  var toastTimer;
+  function toast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3200);
+  }
+
+  /* =================================================================
+     BOOKING MODAL
+  ================================================================== */
+  var bookingModal = document.getElementById('bookingModal');
+  var bookingCard  = document.getElementById('bookingCard');
+  var bookingForm  = document.getElementById('bookingForm');
+  var bookingSubmit= document.getElementById('bookingSubmit');
+
+  function openBooking(house){
+    // Заполняем select домов из текущего контента
+    var sel = bookingForm.elements.house;
+    sel.innerHTML = '<option value="">— любой —</option>';
+    (C.price.houses || []).forEach(function(h){
+      var o = document.createElement('option');
+      o.value = h.name; o.textContent = h.name;
+      sel.appendChild(o);
+    });
+    if (house) sel.value = house;
+    bookingCard.classList.remove('success');
+    bookingModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function(){ bookingForm.elements.name.focus(); }, 80);
+  }
+  function closeBooking(){
+    bookingModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Открытие из любых кнопок с data-open-booking, плюс главные кнопки hero и карточек.
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-open-booking]');
+    if (t){
+      e.preventDefault();
+      openBooking(t.getAttribute('data-house') || '');
+      return;
+    }
+    // hero / контакты — у этих кнопок href начинается с #booking — перенаправим.
+    var a = e.target.closest('a[href="#booking"]');
+    if (a){ e.preventDefault(); openBooking(''); return; }
+    // карточки домов — клик по карточке открывает с предзаполненным домом
+    var card = e.target.closest('#houseCards .card');
+    if (card){
+      var idx = Array.prototype.indexOf.call(card.parentNode.children, card);
+      var name = (C.price.houses[idx] || {}).name || '';
+      openBooking(name);
+    }
+  });
+  document.getElementById('bookingClose').addEventListener('click', closeBooking);
+  bookingModal.addEventListener('click', function(e){ if (e.target === bookingModal) closeBooking(); });
+  addEventListener('keydown', function(e){ if (e.key === 'Escape' && bookingModal.classList.contains('open')) closeBooking(); });
+
+  function showFieldErr(name, on){
+    var el = bookingForm.querySelector('[data-err="'+name+'"]');
+    if (el) el.classList.toggle('show', !!on);
+  }
+
+  bookingForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = {};
+    Array.prototype.forEach.call(bookingForm.elements, function(el){
+      if (el.name) data[el.name] = el.value;
+    });
+    var nameOk = data.name && data.name.trim().length >= 2;
+    var phoneOk = /^[+\d][\d\s\-\(\)]{6,20}$/.test(data.phone || '');
+    showFieldErr('name', !nameOk);
+    showFieldErr('phone', !phoneOk);
+    if (!nameOk || !phoneOk) return;
+
+    bookingSubmit.disabled = true;
+    var orig = bookingSubmit.textContent;
+    bookingSubmit.textContent = 'Отправляем…';
+
+    fetch('/api/booking', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    }).then(function(r){ return r.ok ? r.json() : Promise.reject(r); })
+      .then(function(){
+        bookingCard.classList.add('success');
+        bookingForm.reset();
+      })
+      .catch(function(){ toast('Не удалось отправить заявку. Позвоните нам напрямую.'); })
+      .then(function(){
+        bookingSubmit.disabled = false;
+        bookingSubmit.textContent = orig;
+      });
+  });
+
+  render();
+  buildFlight();
+  requestFrame();
+  // Подтягиваем контент с сервера и проверяем сессию админа.
+  fetchServerContent().then(function(){ buildFlight(); requestFrame(); });
+  checkAdminSession();
+  addEventListener('load', function(){ buildFlight(); requestFrame(); });
+})();
+</script>
+</body>
+</html>
