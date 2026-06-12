@@ -917,6 +917,7 @@ body.admin-available .admin-fab{display:flex}
           var a = item.querySelector('.faq-a');
           a.style.maxHeight = a.scrollHeight + 'px';
         }
+        setTimeout(function(){ buildFlight(); requestFrame(); }, 320);
       });
     });
   }
@@ -1171,8 +1172,7 @@ body.admin-available .admin-fab{display:flex}
 
   function flightUpdate(y){
     if (REDUCED || !flightLen) return;
-    if (Math.abs(document.documentElement.scrollHeight - lastDocH) > 60) buildFlight();
-    var docH = document.documentElement.scrollHeight;
+    var docH = lastDocH;
     var f = Math.min(1, Math.max(0, (y + innerHeight * .55) / docH));
     targetL = lengthAtY(f * docH);
     if (!flightAnim){ flightAnim = true; requestAnimationFrame(flightLoop); }
