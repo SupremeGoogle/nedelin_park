@@ -1343,7 +1343,8 @@ body.admin-available .admin-fab{display:flex}
       '<div class="thumb '+(video?'video-thumb':'')+'" style="'+(v && !video ? 'background-image:url(\''+v+'\')' : '')+'">'+(video?'▶':'')+'</div>'+
       '<button type="button" class="pickbtn">Выбрать фото/видео…</button>'+
       '<button type="button" class="linkbtn">Ссылка…</button>'+
-      '<button type="button" class="clearbtn">Убрать</button></div></div>';
+      '<button type="button" class="clearbtn">Убрать</button></div>'+
+      '<button type="button" class="helpbtn" style="margin-top:6px;font-size:11px;background:none;border:none;color:#b3955c;cursor:pointer;text-decoration:underline;padding:0;text-align:left">Как получить прямую ссылку на видео?</button></div>';
   }
 
   function buildAdmin(){
@@ -1452,6 +1453,21 @@ body.admin-available .admin-fab{display:flex}
         thumb.textContent = '';
         thumb.style.backgroundImage = '';
         render();
+      });
+    });
+    document.querySelectorAll('.admin-field .helpbtn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        alert('Инструкция по получению прямых ссылок на видео:\n\n' +
+              '🟢 Вариант 1: Dropbox (Рекомендуется)\n' +
+              '1. Скопируйте ссылку на видео (в конце должно быть ?dl=0)\n' +
+              '2. Замените ?dl=0 на ?raw=1\n\n' +
+              '🟡 Вариант 2: Google Диск\n' +
+              '1. Откройте доступ к файлу «Все, у кого есть ссылка»\n' +
+              '2. Скопируйте ID файла из ссылки\n' +
+              '3. Соберите ссылку вида: https://drive.google.com/uc?export=download&id=ID_ФАЙЛА\n\n' +
+              '🔴 Вариант 3: Яндекс Диск\n' +
+              '1. Загрузите видео и сделайте его публичным\n' +
+              '2. Сгенерируйте прямую ссылку через сервис yadi-direct.ru и вставьте её');
       });
     });
   }
