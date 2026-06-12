@@ -146,7 +146,7 @@ header.scrolled .nav-links a{color:var(--ink)}
 
 /* птицы */
 /* ---------- about ---------- */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:center}
 @media(max-width:840px){.about-grid{grid-template-columns:1fr}}
 .about-lines p{margin-bottom:16px;color:#3c4a40;font-weight:300;font-size:17px}
 .about-media{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:2px}
@@ -835,7 +835,7 @@ body.admin-available .admin-fab{display:flex}
   function mediaOrPh(src, alt, poster){
     if (!src) return PH_SVG;
     if (isVideoSrc(src)){
-      return '<video src="'+src+'" '+(poster ? 'poster="'+poster+'" ' : '')+'controls playsinline preload="metadata" aria-label="'+esc(alt||'Видео')+'"></video>';
+      return '<video src="'+src+'" '+(poster ? 'poster="'+poster+'" ' : '')+'controls autoplay muted loop playsinline preload="metadata" aria-label="'+esc(alt||'Видео')+'"></video>';
     }
     return '<img class="media-img" src="'+src+'" alt="'+esc(alt||'')+'" loading="lazy">';
   }
