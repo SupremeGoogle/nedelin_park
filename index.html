@@ -830,7 +830,7 @@ body.admin-available .admin-fab{display:flex}
     return src ? '<img src="'+src+'" alt="'+esc(alt||'')+'" loading="lazy">' : PH_SVG;
   }
   function isVideoSrc(src){
-    return /^data:video\//.test(src || '') || /\.(mp4|webm|ogg)(\?|#|$)/i.test(src || '');
+    return /^data:video\//.test(src || '') || /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(src || '') || /drive\.google\.com\/uc/i.test(src || '') || /#video/i.test(src || '');
   }
   function mediaOrPh(src, alt, poster){
     if (!src) return PH_SVG;
