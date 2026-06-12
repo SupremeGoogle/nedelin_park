@@ -25,7 +25,7 @@
   --body:'Manrope', system-ui, sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden}
 body{font-family:var(--body);color:var(--ink);background:var(--linen);line-height:1.65;font-size:16px;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
@@ -61,7 +61,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 @keyframes leafSway{from{transform:translateX(-26px) rotate(-50deg)}to{transform:translateX(26px) rotate(60deg)}}
 
 /* ---------- маршрут через весь сайт: лист летит по линии при скролле ---------- */
-#flight{position:absolute;top:0;left:0;width:100%;z-index:30;pointer-events:none;overflow:visible}
+#flight{position:absolute;top:0;left:0;width:100%;z-index:30;pointer-events:none;overflow:hidden}
 #flightBase{fill:none;stroke:#b3955c;stroke-width:1.6;stroke-dasharray:2 9;stroke-linecap:round;opacity:.4}
 #flightProg{fill:none;stroke:#d9b97c;stroke-width:2;stroke-linecap:round;opacity:.95;
   filter:drop-shadow(0 0 4px rgba(217,185,124,.9)) drop-shadow(0 0 12px rgba(179,149,92,.5))}
