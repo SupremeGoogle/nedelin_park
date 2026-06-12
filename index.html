@@ -1286,8 +1286,8 @@ body.admin-available .admin-fab{display:flex}
     if (!file || !pickCb) return;
     var isVideo = (file.type && file.type.indexOf('video/') === 0) || /\.(mp4|webm|ogg)$/i.test(file.name);
     if (isVideo){
-      if (file.size > 700000){
-        toast('Видео слишком большое для сохранения в базе данных (макс. 700 КБ). Рекомендуем загрузить видео на сторонний хостинг и вставить через кнопку «Ссылка…»');
+      if (file.size > 3000000){
+        toast('Видео слишком большое для сохранения (макс. 3 МБ). Рекомендуем загрузить видео на сторонний хостинг и вставить через кнопку «Ссылка…»');
         pickCb = null;
         return;
       }
@@ -1490,7 +1490,7 @@ body.admin-available .admin-fab{display:flex}
         }
       }
       else if (result.status === 401){ toast('Сессия истекла — войдите снова'); location.reload(); }
-      else if (result.status === 413){ toast('Слишком большие фото — уменьшите размер'); }
+      else if (result.status === 413){ toast('Размер данных слишком велик (лимит 900 КБ для KV / 4.2 МБ для GitHub). Уменьшите видео/фото.'); }
       else if (result.data && result.data.error === 'storage_not_configured'){ toast('Нужно настроить GITHUB_TOKEN или KV для сохранения'); }
       else if (result.data && result.data.error === 'github_write_failed'){ toast('GitHub не принял сохранение — проверьте токен и доступ к репозиторию'); }
       else { toast('Не удалось сохранить'); }

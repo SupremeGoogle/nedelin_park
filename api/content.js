@@ -44,10 +44,11 @@ export default async function handler(req, res) {
     if (!body || typeof body !== 'object' || Array.isArray(body)) {
       return res.status(400).json({ ok: false, error: 'bad_payload' });
     }
-    // Ограничение размера: KV хранит строки до 1 МБ. Большие base64-фото нужно отправлять отдельно или хранить на CDN.
+    // Ограничение размера: KV хранит строки до 1 МБ (лимит 900 КБ). Для GitHub лимит 4.2 МБ (ограничение Vercel Serverless body).
     const serialized = JSON.stringify(body);
-    if (serialized.length > 900_000) {
-      return res.status(413).json({ ok: false, error: 'payload_too_large', size: serialized.length });
+    const limit = kvConfigured() ? 900_000 : 4_200_000;
+    if (serialized.length > limit) {
+      return res.status(413).json({ ok: false, error: 'payload_too_large', size: serialized.length, limit });
     }
     if (kvConfigured()) {
       try {
