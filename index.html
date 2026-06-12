@@ -61,14 +61,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 @keyframes leafSway{from{transform:translateX(-26px) rotate(-50deg)}to{transform:translateX(26px) rotate(60deg)}}
 
 /* ---------- маршрут через весь сайт: лист летит по линии при скролле ---------- */
-#flight{position:absolute;top:0;left:0;width:100%;z-index:30;pointer-events:none;overflow:visible}
-#flightBase{fill:none;stroke:#b3955c;stroke-width:1.6;stroke-dasharray:2 9;stroke-linecap:round;opacity:.4}
-#flightProg{fill:none;stroke:#d9b97c;stroke-width:2;stroke-linecap:round;opacity:.9}
-.flight-dot{fill:rgba(179,149,92,.18);stroke:#b3955c;stroke-width:1.2;transition:fill .4s}
-.flight-dot.done{fill:#d9b97c;filter:drop-shadow(0 0 6px rgba(217,185,124,.9))}
-.flight-ring{fill:none;stroke:#d9b97c;stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center}
-.flight-ring.ping{animation:flightPing .9s ease-out}
-@keyframes flightPing{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(2.6)}}
+#flight{position:fixed;top:0;left:0;width:80px;height:80px;z-index:30;pointer-events:none;overflow:visible;contain:layout paint;will-change:transform}
 #flightLeaf{will-change:transform}
 #flightLeaf .leaf-flutter{animation:flutter 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
 @keyframes flutter{from{transform:rotate(-14deg) scale(1)}to{transform:rotate(16deg) scale(1.08)}}
@@ -76,10 +69,6 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 @keyframes leafBurst{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.7) rotate(160deg)}100%{transform:scale(1) rotate(360deg)}}
 #flightLeaf .leaf-glow{animation:glowBreath 2.2s ease-in-out infinite alternate}
 @keyframes glowBreath{from{opacity:.25}to{opacity:.6}}
-@media(max-width:760px){
-  #flightBase{opacity:.25}
-  #flightProg{opacity:.72}
-}
 
 /* ---------- header ---------- */
 header{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .4s,box-shadow .4s}
@@ -680,7 +669,7 @@ body.admin-available .admin-fab{display:flex}
 
   <div class="admin-body" id="adminBody" style="display:none">
     <div class="admin-note">
-      Меняйте любые тексты, фото и контакты, нажимайте <b>«Сохранить»</b> — изменения сразу появятся у всех посетителей сайта.
+      Меняйте любые тексты, фото и контакты, нажимайте <b>«Сохранить»</b>. Если сайт сохраняет через GitHub, изменения появятся после деплоя — обычно примерно через минуту.
     </div>
     <div id="adminSections"></div>
   </div>
@@ -995,50 +984,17 @@ body.admin-available .admin-fab{display:flex}
     }
   })();
 
-  /* ---------- маршрут через весь сайт: лист летит по линии ---------- */
-  var SECTION_IDS = ['about','rent','price','reviews','faq','contacts'];
+  /* ---------- лёгкий лист, привязанный к прогрессу скролла ---------- */
   var flightSvg = document.getElementById('flight');
-  var flightProg, flightLeaf, flightLen = 0, leafL = 0, targetL = 0,
-      flightDots = [], flightAnim = false, lastDocH = 0;
-  // Предвычисленная таблица [L, x, y, angle] — выбираем один раз при сборке маршрута,
-  // потом scroll-обработчик не дёргает дорогой getPointAtLength на каждом кадре.
-  var flightTable = null;
-  var NS = 'http://www.w3.org/2000/svg';
+  var flightLeaf, flightLen = 0, leafL = 0, targetL = 0, flightAnim = false, lastDocH = 0;
 
   function buildFlight(){
     if (REDUCED) return;
-    var docH = document.documentElement.scrollHeight;
-    var W = document.documentElement.clientWidth;
-    lastDocH = docH;
-    flightSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + docH);
-    flightSvg.setAttribute('width', W);
-    flightSvg.setAttribute('height', docH);
-    flightSvg.style.height = docH + 'px';
-
-    // опорные точки: старт под hero, далее зигзагом через секции, финиш у подвала
-    var margin = Math.max(30, W * 0.06);
-    var pts = [{x: W/2, y: innerHeight * 0.92}];
-    SECTION_IDS.forEach(function(id, i){
-      var el = document.getElementById(id);
-      if (!el) return;
-      pts.push({
-        x: (i % 2 === 0) ? W - margin : margin,
-        y: el.offsetTop + Math.min(el.offsetHeight * 0.45, 320)
-      });
-    });
-    pts.push({x: W/2, y: docH - 70});
-
-    // плавная S-кривая через точки
-    var d = 'M' + pts[0].x + ' ' + pts[0].y;
-    for (var i = 1; i < pts.length; i++){
-      var a = pts[i-1], b = pts[i], my = (a.y + b.y) / 2;
-      d += ' C ' + a.x + ' ' + my + ', ' + b.x + ' ' + my + ', ' + b.x + ' ' + b.y;
-    }
-
+    lastDocH = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    flightSvg.setAttribute('viewBox', '0 0 80 80');
+    flightSvg.setAttribute('width', 80);
+    flightSvg.setAttribute('height', 80);
     flightSvg.innerHTML =
-      '<path id="flightBase" d="' + d + '"/>' +
-      '<path id="flightProg" d="' + d + '"/>' +
-      '<g id="flightDots"></g>' +
       '<g id="flightLeaf">' +
         '<g class="leaf-flutter">' +
           '<ellipse class="leaf-glow" rx="16" ry="16" fill="#ffe9a8" opacity=".35" style="filter:blur(6px)"/>' +
@@ -1047,112 +1003,47 @@ body.admin-available .admin-fab{display:flex}
         '</g>' +
       '</g>';
 
-    flightProg = document.getElementById('flightProg');
     flightLeaf = document.getElementById('flightLeaf');
-    flightLen = flightProg.getTotalLength();
-    flightProg.style.strokeDasharray = flightLen;
-    flightProg.style.strokeDashoffset = flightLen;
-
-    // Сэмплируем путь один раз: ~240 точек, шаг по длине.
-    // На каждом кадре теперь только массивный lookup + интерполяция.
-    var STEPS = 240;
-    flightTable = new Array(STEPS + 1);
-    for (var s = 0; s <= STEPS; s++){
-      var L = (s / STEPS) * flightLen;
-      var pt = flightProg.getPointAtLength(L);
-      flightTable[s] = { L: L, x: pt.x, y: pt.y };
-    }
-    // углы по соседним точкам
-    for (var s2 = 0; s2 <= STEPS; s2++){
-      var a = flightTable[Math.max(0, s2 - 1)];
-      var b = flightTable[Math.min(STEPS, s2 + 1)];
-      flightTable[s2].ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI + 90;
-    }
-
-    // чекпоинты секций на линии
-    var dotsG = document.getElementById('flightDots');
-    flightDots = [];
-    pts.slice(1, -1).forEach(function(p){
-      var L = lengthAtY(p.y);
-      var pos = sampleAt(L);
-      var ring = document.createElementNS(NS, 'circle');
-      ring.setAttribute('class', 'flight-ring');
-      ring.setAttribute('cx', pos.x); ring.setAttribute('cy', pos.y); ring.setAttribute('r', 9);
-      var c = document.createElementNS(NS, 'circle');
-      c.setAttribute('class', 'flight-dot');
-      c.setAttribute('cx', pos.x); c.setAttribute('cy', pos.y); c.setAttribute('r', 5.5);
-      dotsG.appendChild(ring); dotsG.appendChild(c);
-      flightDots.push({L: L, dot: c, ring: ring, done: false});
-    });
-
-    leafL = Math.min(leafL, flightLen);
+    flightLen = 1;
+    leafL = Math.max(0, Math.min(1, leafL));
     placeLeaf(leafL);
   }
 
-  // Бинарный поиск по таблице (y монотонен), интерполяция между двумя точками.
-  function lengthAtY(y){
-    if (!flightTable) return 0;
-    var lo = 0, hi = flightTable.length - 1;
-    while (hi - lo > 1){
-      var mid = (lo + hi) >> 1;
-      if (flightTable[mid].y < y) lo = mid; else hi = mid;
-    }
-    var a = flightTable[lo], b = flightTable[hi];
-    var dy = b.y - a.y;
-    var k = dy === 0 ? 0 : (y - a.y) / dy;
-    return a.L + (b.L - a.L) * Math.max(0, Math.min(1, k));
-  }
-
-  // Позиция и угол по длине L — линейная интерполяция по таблице.
+  // Позиция считается простой математикой, без SVG-path и getPointAtLength.
   function sampleAt(L){
-    if (!flightTable) return { x:0, y:0, ang:0 };
-    var n = flightTable.length - 1;
-    var f = L / flightLen * n;
-    var i = f | 0;
-    if (i >= n) return flightTable[n];
-    if (i < 0) return flightTable[0];
-    var k = f - i;
-    var a = flightTable[i], b = flightTable[i + 1];
-    return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, ang: a.ang + (b.ang - a.ang) * k };
+    var p = Math.max(0, Math.min(1, L || 0));
+    var xRange = Math.max(0, innerWidth - 96);
+    var yRange = Math.max(0, innerHeight - 96);
+    var sway = Math.sin(p * Math.PI * 3.4);
+    return {
+      x: 16 + xRange * (0.5 + sway * 0.34),
+      y: 12 + yRange * p,
+      ang: 28 + Math.sin(p * Math.PI * 6) * 24
+    };
   }
 
   function placeLeaf(L){
     var p = sampleAt(L);
-    flightLeaf.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') rotate(' + p.ang + ')');
-    flightProg.style.strokeDashoffset = Math.max(0, flightLen - L);
-
-    // чекпоинты: вспышка при пролёте
-    flightDots.forEach(function(o){
-      if (!o.done && L >= o.L){
-        o.done = true;
-        o.dot.classList.add('done');
-        o.ring.classList.remove('ping'); void o.ring.getBoundingClientRect(); o.ring.classList.add('ping');
-        flightLeaf.classList.remove('burst'); void flightLeaf.getBoundingClientRect(); flightLeaf.classList.add('burst');
-        setTimeout(function(){ flightLeaf.classList.remove('burst'); }, 750);
-      } else if (o.done && L < o.L - 30){
-        o.done = false;
-        o.dot.classList.remove('done');
-      }
-    });
+    flightSvg.style.transform = 'translate3d(' + p.x + 'px,' + p.y + 'px,0)';
+    flightLeaf.setAttribute('transform', 'translate(40 40) rotate(' + p.ang + ')');
   }
 
   function flightLoop(){
     var diff = targetL - leafL;
-    if (Math.abs(diff) < .5){
+    if (Math.abs(diff) < .002){
       leafL = targetL;
       placeLeaf(leafL);
       flightAnim = false;
       return;
     }
-    leafL += diff * .085; // мягкая инерция полёта
+    leafL += diff * .18; // мягкая инерция полёта
     placeLeaf(leafL);
     requestAnimationFrame(flightLoop);
   }
 
   function flightUpdate(y){
     if (REDUCED || !flightLen) return;
-    var f = Math.min(1, Math.max(0, (y + innerHeight * .55) / lastDocH));
-    targetL = lengthAtY(f * lastDocH);
+    targetL = Math.min(1, Math.max(0, y / lastDocH));
     if (!flightAnim){ flightAnim = true; requestAnimationFrame(flightLoop); }
   }
 
@@ -1431,10 +1322,21 @@ body.admin-available .admin-fab{display:flex}
       credentials: 'same-origin',
       body: serialized
     }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(data){ return { ok: r.ok, status: r.status, data: data }; });
+    }).then(function(result){
       btn.disabled = false; btn.textContent = orig;
-      if (r.ok){ render(); toast('Сохранено — изменения видны всем'); }
-      else if (r.status === 401){ toast('Сессия истекла — войдите снова'); location.reload(); }
-      else if (r.status === 413){ toast('Слишком большие фото — уменьшите размер'); }
+      if (result.ok){
+        render();
+        if (result.data && result.data.visibleSoon) {
+          toast('Сохранено. Изменения вступят в силу примерно через минуту после деплоя');
+        } else {
+          toast('Сохранено — изменения видны всем');
+        }
+      }
+      else if (result.status === 401){ toast('Сессия истекла — войдите снова'); location.reload(); }
+      else if (result.status === 413){ toast('Слишком большие фото — уменьшите размер'); }
+      else if (result.data && result.data.error === 'storage_not_configured'){ toast('Нужно настроить GITHUB_TOKEN или KV для сохранения'); }
+      else if (result.data && result.data.error === 'github_write_failed'){ toast('GitHub не принял сохранение — проверьте токен и доступ к репозиторию'); }
       else { toast('Не удалось сохранить'); }
     }).catch(function(){
       btn.disabled = false; btn.textContent = orig;

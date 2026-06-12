@@ -14,11 +14,13 @@
         │                                          │                                   │
         │                                          ▼                                   ▼
         │                                ┌───────────────────┐                  ┌──────────────┐
-        └────────────────────────────────│  Vercel KV (Upstash)│                 │  Telegram    │
+        └────────────────────────────────│ KV или GitHub JSON │                 │  Telegram    │
                                          └───────────────────┘                  └──────────────┘
 ```
 
-* Контент сайта хранится в **Vercel KV** (REST API Upstash).
+* Контент сайта хранится в **Vercel KV** (быстро, сразу видно) или в
+  **content.json через GitHub API** (если KV не подключён; изменения видны после
+  нового деплоя, обычно примерно через минуту).
 * Админ-панель открывается изнутри сайта (`#admin` или 5 кликов по логотипу),
   вход — по серверному коду из ENV (`ADMIN_CODE`, по умолчанию `nedelin062026`).
 * Бронирование отправляется в **Cloudflare Worker** (`/notify`), который рассылает
@@ -38,10 +40,25 @@
 | `CF_NOTIFY_SECRET` | случайная строка ≥ 32 символов | Сгенерируйте `openssl rand -hex 32`. Должна совпадать с секретом воркера. |
 | `KV_REST_API_URL` | заполняется автоматически | После добавления интеграции **Vercel KV** (Upstash Redis) в проект. |
 | `KV_REST_API_TOKEN` | заполняется автоматически | То же. |
+| `GITHUB_TOKEN` | fine-grained token с доступом Contents: Read and write | Нужен, если не подключаете KV. Токен должен иметь доступ к `SupremeGoogle/nedelin_park`. |
+| `GITHUB_REPO` | `SupremeGoogle/nedelin_park` | Необязательно, это значение используется по умолчанию. |
+| `GITHUB_BRANCH` | `main` | Необязательно, это значение используется по умолчанию. |
+| `GITHUB_CONTENT_PATH` | `content.json` | Необязательно, это значение используется по умолчанию. |
 
 Чтобы подключить хранилище, в Vercel → проект → **Storage** → **Create database** →
 выберите **Upstash KV** (или **Marketplace → Upstash → Redis**). После связки с
 проектом переменные `KV_REST_API_URL` / `KV_REST_API_TOKEN` появятся сами.
+
+Если KV не нужен, создайте fine-grained GitHub token:
+
+1. GitHub → Settings → Developer settings → Fine-grained tokens.
+2. Repository access: только `SupremeGoogle/nedelin_park`.
+3. Permissions → Contents: **Read and write**.
+4. Добавьте токен в Vercel как `GITHUB_TOKEN`.
+
+При таком режиме кнопка «Сохранить» в админке коммитит новый `content.json` в
+репозиторий. GitHub/Vercel запускают деплой, поэтому посетители увидят изменения
+не мгновенно, а примерно через минуту.
 
 ### Cloudflare Worker (`worker/`)
 
@@ -97,7 +114,7 @@ curl "https://api.telegram.org/bot$BOT_TOKEN/setWebhook" \
 ### 3. Vercel
 
 1. Импортируйте репозиторий `SupremeGoogle/nedelin_park` в Vercel.
-2. **Storage → Upstash KV** (или Upstash Redis) → подключите к проекту.
+2. Подключите **Storage → Upstash KV** или добавьте `GITHUB_TOKEN` для сохранения через репозиторий.
 3. **Settings → Environment Variables** добавьте `ADMIN_CODE`,
    `ADMIN_SESSION_SECRET`, `CF_NOTIFY_URL`, `CF_NOTIFY_SECRET`.
 4. Deploy.
@@ -119,9 +136,11 @@ curl "https://api.telegram.org/bot$BOT_TOKEN/setWebhook" \
   нижнем углу (после первого открытия), либо хеш `/#admin`.
 * Код доступа: значение `ADMIN_CODE` (по умолчанию **`nedelin062026`**).
 * В админке можно редактировать любые поля: заголовки, абзацы «о нас»,
-  список «что входит в аренду», список домов с ценами и фото, отзывы, FAQ,
-  контакты, тексты подвала. Каждое сохранение пишется в Vercel KV — изменения
-  видны всем посетителям сразу.
+  фото/видео, список «что входит в аренду», тарифы с ценами и фото, отзывы, FAQ,
+  контакты, тексты подвала.
+* Если подключён KV, изменения видны сразу. Если подключён `GITHUB_TOKEN`,
+  админка сохраняет `content.json` в репозиторий, а изменения появятся после
+  нового деплоя — обычно примерно через минуту.
 
 ## Локальная разработка
 
