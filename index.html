@@ -432,8 +432,7 @@ body.admin-available .admin-fab{display:flex}
     "images": ["", ""]
   },
   "footer": {
-    "privacy": "Политика конфиденциальности",
-    "offer": "Договор оферты"
+    "privacy": "Политика конфиденциальности"
   }
 }
 </script>
@@ -656,7 +655,6 @@ body.admin-available .admin-fab{display:flex}
     </div>
     <div class="docs">
       <a href="#privacy" data-open-policy data-t="footer.privacy"></a>
-      <a href="#" data-t="footer.offer"></a>
     </div>
   </div>
 </footer>
@@ -1404,8 +1402,7 @@ body.admin-available .admin-fab{display:flex}
       fieldImg('Фото территории 2', 'contacts.images.1')
     ));
     s.push(sec('Подвал',
-      fieldText('Ссылка 1', 'footer.privacy') +
-      fieldText('Ссылка 2', 'footer.offer')
+      fieldText('Политика конфиденциальности', 'footer.privacy')
     ));
     document.getElementById('adminSections').innerHTML = s.join('');
 
