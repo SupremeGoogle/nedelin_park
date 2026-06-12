@@ -63,8 +63,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 /* ---------- маршрут через весь сайт: лист летит по линии при скролле ---------- */
 #flight{position:absolute;top:0;left:0;width:100%;z-index:30;pointer-events:none;overflow:visible}
 #flightBase{fill:none;stroke:#b3955c;stroke-width:1.6;stroke-dasharray:2 9;stroke-linecap:round;opacity:.4}
-#flightProg{fill:none;stroke:#d9b97c;stroke-width:2;stroke-linecap:round;opacity:.95;
-  filter:drop-shadow(0 0 4px rgba(217,185,124,.9)) drop-shadow(0 0 12px rgba(179,149,92,.5))}
+#flightProg{fill:none;stroke:#d9b97c;stroke-width:2;stroke-linecap:round;opacity:.9}
 .flight-dot{fill:rgba(179,149,92,.18);stroke:#b3955c;stroke-width:1.2;transition:fill .4s}
 .flight-dot.done{fill:#d9b97c;filter:drop-shadow(0 0 6px rgba(217,185,124,.9))}
 .flight-ring{fill:none;stroke:#d9b97c;stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center}
@@ -77,10 +76,10 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 @keyframes leafBurst{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.7) rotate(160deg)}100%{transform:scale(1) rotate(360deg)}}
 #flightLeaf .leaf-glow{animation:glowBreath 2.2s ease-in-out infinite alternate}
 @keyframes glowBreath{from{opacity:.25}to{opacity:.6}}
-/* искорки за листом */
-.spark{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffe9a8;pointer-events:none;z-index:31;
-  animation:sparkFade .9s ease-out forwards;box-shadow:0 0 8px rgba(255,233,168,.9)}
-@keyframes sparkFade{from{opacity:.95;transform:scale(1)}to{opacity:0;transform:scale(.2) translateY(14px)}}
+@media(max-width:760px){
+  #flightBase{opacity:.25}
+  #flightProg{opacity:.72}
+}
 
 /* ---------- header ---------- */
 header{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .4s,box-shadow .4s}
@@ -151,6 +150,7 @@ header.scrolled .nav-links a{color:var(--ink)}
 .about-lines p{margin-bottom:16px;color:#3c4a40;font-weight:300;font-size:17px}
 .about-media{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:2px}
 .about-media .media-img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s ease}
+.about-media video{width:100%;height:100%;object-fit:cover;display:block;background:#0a150e}
 .about-media:hover .media-img{transform:scale(1.06)}
 .about-media::after{content:'';position:absolute;inset:14px;border:1px solid rgba(244,240,230,.55);pointer-events:none}
 .corner-branch{position:absolute;width:130px;opacity:.5;pointer-events:none;z-index:1}
@@ -270,6 +270,7 @@ body.admin-available .admin-fab{display:flex}
 .admin-field textarea{min-height:72px;resize:vertical}
 .img-ctrl{display:flex;gap:12px;align-items:center}
 .img-ctrl .thumb{width:64px;height:48px;border:1px solid #d8d4c4;border-radius:3px;background:#eee center/cover no-repeat;flex:0 0 64px}
+.img-ctrl .thumb.video-thumb{background:#18241d;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:20px}
 .img-ctrl .pickbtn{font-size:12px;padding:8px 14px;border:1px solid var(--pine);background:#fff;color:var(--pine);border-radius:3px;cursor:pointer}
 .img-ctrl .clearbtn{font-size:12px;padding:8px 10px;border:1px solid #c9c4b2;background:#fff;color:#8a8675;border-radius:3px;cursor:pointer}
 .admin-foot{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e1d3;padding:14px 22px;display:flex;gap:10px;flex-wrap:wrap}
@@ -315,6 +316,10 @@ body.admin-available .admin-fab{display:flex}
 .modal-card.success .modal-ok{display:block}
 .field-err{font-size:11px;color:#b03a3a;margin-top:4px;display:none}
 .field-err.show{display:block}
+.policy-text{padding:18px 28px 30px;color:#3c4a40;font-size:14px;font-weight:300}
+.policy-text h4{font-family:var(--display);font-size:22px;color:var(--pine);margin:20px 0 8px}
+.policy-text p{margin-bottom:10px}
+.policy-text ul{padding-left:18px;margin:0 0 12px}
 
 /* красивее админка */
 .admin-login{padding:50px 30px;text-align:center}
@@ -342,7 +347,9 @@ body.admin-available .admin-fab{display:flex}
       "Внутри — большая кровать, тёплый пол, своя ванная комната и всё необходимое для отдыха вдвоём или с семьёй.",
       "Мы создали место, куда хочется возвращаться: без суеты, без соседей за стеной, наедине с природой."
     ],
-    "image": ""
+    "image": "",
+    "video": "",
+    "videoPoster": ""
   },
   "rent": {
     "heading": "Что входит в аренду",
@@ -357,21 +364,21 @@ body.admin-available .admin-fab{display:flex}
     "heading": "Стоимость",
     "houses": [
       {
-        "name": "Сфера «Лес»",
-        "desc": "Купол на двоих в первой линии у соснового бора. Панорамное окно на лес, терраса с качелями.",
-        "price": "от 8 000 ₽ / ночь",
+        "name": "Будние",
+        "desc": "Опишите тариф будних дней — что входит, на сколько гостей, особые условия.",
+        "price": "— ₽ / ночь",
         "image": ""
       },
       {
-        "name": "Сфера «Небо»",
-        "desc": "Прозрачный потолок над кроватью — звёзды вместо люстры. Идеально для романтического отдыха.",
-        "price": "от 9 500 ₽ / ночь",
+        "name": "Выходные",
+        "desc": "Опишите тариф выходного дня — пятница–воскресенье, что входит.",
+        "price": "— ₽ / ночь",
         "image": ""
       },
       {
-        "name": "Сфера «Семейная»",
-        "desc": "Просторный купол до 4 гостей с двумя спальными зонами и большой террасой для завтраков на воздухе.",
-        "price": "от 12 000 ₽ / ночь",
+        "name": "Сфера семейная",
+        "desc": "Опишите семейный тариф — сколько гостей, как с детьми, что входит.",
+        "price": "— ₽ / ночь",
         "image": ""
       }
     ]
@@ -556,7 +563,7 @@ body.admin-available .admin-fab{display:flex}
     <svg viewBox="0 0 130 80" stroke-width="1" aria-hidden="true"><g class="sway" style="transform-origin:130px 0"><path d="M130 4 C 90 10, 60 26, 20 60"/><path d="M104 12 C 100 22, 96 28, 88 34 M86 22 C 84 30, 80 36, 74 42 M66 32 C 62 40, 58 46, 50 52 M46 44 C 44 52, 40 58, 34 62"/></g></svg>
   </div>
   <div class="wrap">
-    <span class="eyebrow rv">Дома</span><br>
+    <span class="eyebrow rv">Тарифы</span><br>
     <h2 class="section-title rv" data-t="price.heading">Стоимость</h2>
     <div class="cards" id="houseCards"></div>
 
@@ -647,7 +654,7 @@ body.admin-available .admin-fab{display:flex}
       Почта: <span data-t="contacts.email"></span> · Тел: <span data-t="contacts.phone"></span>
     </div>
     <div class="docs">
-      <a href="#" data-t="footer.privacy"></a>
+      <a href="#privacy" data-open-policy data-t="footer.privacy"></a>
       <a href="#" data-t="footer.offer"></a>
     </div>
   </div>
@@ -686,7 +693,7 @@ body.admin-available .admin-fab{display:flex}
 </aside>
 
 <div class="toast" id="toast"></div>
-<input type="file" id="filePicker" accept="image/*" hidden>
+<input type="file" id="filePicker" accept="image/*,video/mp4,video/webm,video/ogg" hidden>
 
 <!-- ===================== BOOKING MODAL ===================== -->
 <div class="modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
@@ -717,13 +724,7 @@ body.admin-available .admin-fab{display:flex}
           <input id="bk-out" name="dateOut" type="date">
         </div>
       </div>
-      <div class="row">
-        <div>
-          <label for="bk-house">Дом</label>
-          <select id="bk-house" name="house">
-            <option value="">— любой —</option>
-          </select>
-        </div>
+      <div>
         <div>
           <label for="bk-guests">Гостей</label>
           <input id="bk-guests" name="guests" type="number" min="1" max="10" value="2">
@@ -738,7 +739,7 @@ body.admin-available .admin-fab{display:flex}
       <button type="submit" class="modal-submit" id="bookingSubmit">Отправить заявку</button>
     </form>
     <div class="modal-foot">
-      Отправляя заявку, вы соглашаетесь с <a href="#" data-t="footer.privacy" style="border-bottom:1px solid #b3955c">политикой конфиденциальности</a>.
+      Отправляя заявку, вы соглашаетесь с <a href="#privacy" data-open-policy data-t="footer.privacy" style="border-bottom:1px solid #b3955c">политикой конфиденциальности</a>.
     </div>
     <div class="modal-ok">
       <div class="ok-ico">
@@ -746,6 +747,35 @@ body.admin-available .admin-fab{display:flex}
       </div>
       <h4>Заявка отправлена</h4>
       <p>Свяжемся с вами в ближайшее время</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PRIVACY POLICY MODAL ===================== -->
+<div class="modal" id="policyModal" role="dialog" aria-modal="true" aria-labelledby="policyTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <button type="button" class="modal-close" id="policyClose" aria-label="Закрыть">×</button>
+      <h3 id="policyTitle">Политика конфиденциальности</h3>
+      <div class="modal-sub">Порядок обработки персональных данных посетителей сайта</div>
+    </div>
+    <div class="policy-text">
+      <p>Настоящая политика описывает, как Nedelin Park обрабатывает данные, которые пользователь передает через формы сайта.</p>
+      <h4>Какие данные обрабатываются</h4>
+      <ul>
+        <li>имя, телефон, даты заезда и выезда, количество гостей и комментарий к заявке;</li>
+        <li>технические данные: IP-адрес, страница перехода и user-agent браузера.</li>
+      </ul>
+      <h4>Цели обработки</h4>
+      <p>Данные используются для обработки заявки, связи с гостем, согласования бронирования и улучшения работы сайта.</p>
+      <h4>Передача данных</h4>
+      <p>Данные могут передаваться техническим сервисам, которые обеспечивают работу сайта и уведомлений. Данные не продаются и не передаются третьим лицам для рекламных рассылок.</p>
+      <h4>Срок хранения</h4>
+      <p>Заявки хранятся столько, сколько необходимо для связи с пользователем, выполнения бронирования и соблюдения требований закона.</p>
+      <h4>Права пользователя</h4>
+      <p>Пользователь может запросить уточнение, удаление или прекращение обработки своих данных, написав на почту <span data-t="contacts.email"></span>.</p>
+      <h4>Оператор</h4>
+      <p><span data-t="contacts.legalName"></span><br><span data-t="contacts.inn"></span> · <span data-t="contacts.ogrn"></span></p>
     </div>
   </div>
 </div>
@@ -797,6 +827,16 @@ body.admin-available .admin-fab{display:flex}
   function imgOrPh(src, alt){
     return src ? '<img src="'+src+'" alt="'+esc(alt||'')+'" loading="lazy">' : PH_SVG;
   }
+  function isVideoSrc(src){
+    return /^data:video\//.test(src || '') || /\.(mp4|webm|ogg)(\?|#|$)/i.test(src || '');
+  }
+  function mediaOrPh(src, alt, poster){
+    if (!src) return PH_SVG;
+    if (isVideoSrc(src)){
+      return '<video src="'+src+'" '+(poster ? 'poster="'+poster+'" ' : '')+'controls playsinline preload="metadata" aria-label="'+esc(alt||'Видео')+'"></video>';
+    }
+    return '<img class="media-img" src="'+src+'" alt="'+esc(alt||'')+'" loading="lazy">';
+  }
 
   /* ---------- render ---------- */
   function render(){
@@ -812,7 +852,7 @@ body.admin-available .admin-fab{display:flex}
     document.getElementById('aboutLines').innerHTML =
       C.about.lines.map(function(l){ return '<p>'+esc(l)+'</p>'; }).join('');
     document.getElementById('aboutMedia').innerHTML =
-      C.about.image ? '<img class="media-img" src="'+C.about.image+'" alt="О парке">' : PH_SVG;
+      C.about.video ? mediaOrPh(C.about.video, 'Видео о парке', C.about.videoPoster || C.about.image) : mediaOrPh(C.about.image, 'О парке');
 
     var icons = [
       '<path d="M12 3 4 13h3v8h10v-8h3L12 3z"/>',
@@ -1076,7 +1116,6 @@ body.admin-available .admin-fab{display:flex}
     return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, ang: a.ang + (b.ang - a.ang) * k };
   }
 
-  var sparkT = 0;
   function placeLeaf(L){
     var p = sampleAt(L);
     flightLeaf.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') rotate(' + p.ang + ')');
@@ -1095,19 +1134,6 @@ body.admin-available .admin-fab{display:flex}
         o.dot.classList.remove('done');
       }
     });
-
-    // искорки за летящим листом
-    var now = performance.now();
-    if (now - sparkT > 90 && Math.abs(targetL - leafL) > 4){
-      sparkT = now;
-      var s = document.createElement('span');
-      s.className = 'spark';
-      s.style.left = (p.x + (Math.random()*14 - 7)) + 'px';
-      s.style.top = (p.y + (Math.random()*14 - 7)) + 'px';
-      s.style.position = 'absolute';
-      document.body.appendChild(s);
-      setTimeout(function(){ s.remove(); }, 950);
-    }
   }
 
   function flightLoop(){
@@ -1125,10 +1151,8 @@ body.admin-available .admin-fab{display:flex}
 
   function flightUpdate(y){
     if (REDUCED || !flightLen) return;
-    if (Math.abs(document.documentElement.scrollHeight - lastDocH) > 60) buildFlight();
-    var docH = document.documentElement.scrollHeight;
-    var f = Math.min(1, Math.max(0, (y + innerHeight * .55) / docH));
-    targetL = lengthAtY(f * docH);
+    var f = Math.min(1, Math.max(0, (y + innerHeight * .55) / lastDocH));
+    targetL = lengthAtY(f * lastDocH);
     if (!flightAnim){ flightAnim = true; requestAnimationFrame(flightLoop); }
   }
 
@@ -1232,12 +1256,26 @@ body.admin-available .admin-fab{display:flex}
       .catch(function(){});
   }
 
-  /* ----- картинки через проводник + сжатие ----- */
+  /* ----- медиа через проводник + сжатие фото ----- */
   var picker = document.getElementById('filePicker');
   var pickCb = null;
   picker.addEventListener('change', function(){
     var file = picker.files[0]; picker.value = '';
     if (!file || !pickCb) return;
+    if (file.type.indexOf('video/') === 0){
+      if (file.size > 650000){
+        toast('Видео слишком большое для текущего хранилища — выберите короткий webm/mp4 до 650 КБ');
+        pickCb = null;
+        return;
+      }
+      var videoReader = new FileReader();
+      videoReader.onload = function(){
+        pickCb(videoReader.result, file.type);
+        pickCb = null;
+      };
+      videoReader.readAsDataURL(file);
+      return;
+    }
     var reader = new FileReader();
     reader.onload = function(){
       var img = new Image();
@@ -1247,7 +1285,7 @@ body.admin-available .admin-fab{display:flex}
         if (Math.max(w,h) > MAX){ var k = MAX/Math.max(w,h); w = Math.round(w*k); h = Math.round(h*k); }
         var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
         cv.getContext('2d').drawImage(img, 0, 0, w, h);
-        pickCb(cv.toDataURL('image/jpeg', .82));
+        pickCb(cv.toDataURL('image/jpeg', .82), 'image/jpeg');
         pickCb = null;
       };
       img.src = reader.result;
@@ -1268,6 +1306,14 @@ body.admin-available .admin-fab{display:flex}
       '<button type="button" class="pickbtn">Выбрать файл…</button>'+
       '<button type="button" class="clearbtn">Убрать</button></div></div>';
   }
+  function fieldMedia(label, path){
+    var v = get(C, path);
+    var video = isVideoSrc(v);
+    return '<div class="admin-field"><label>'+esc(label)+'</label><div class="img-ctrl" data-imgpath="'+path+'" data-kind="media">'+
+      '<div class="thumb '+(video?'video-thumb':'')+'" style="'+(v && !video ? 'background-image:url('+v+')' : '')+'">'+(video?'▶':'')+'</div>'+
+      '<button type="button" class="pickbtn">Выбрать фото/видео…</button>'+
+      '<button type="button" class="clearbtn">Убрать</button></div></div>';
+  }
 
   function buildAdmin(){
     var s = [];
@@ -1282,20 +1328,21 @@ body.admin-available .admin-fab{display:flex}
     s.push(sec('О нас',
       fieldText('Заголовок раздела', 'about.heading') +
       C.about.lines.map(function(_,i){ return fieldArea('Абзац '+(i+1), 'about.lines.'+i); }).join('') +
-      fieldImg('Фото раздела', 'about.image')
+      fieldMedia('Видео раздела (или фото)', 'about.video') +
+      fieldImg('Фото раздела / обложка видео', 'about.image')
     ));
     s.push(sec('Что входит в аренду',
       fieldText('Заголовок раздела', 'rent.heading') +
       C.rent.items.map(function(_,i){ return fieldArea('Пункт '+(i+1), 'rent.items.'+i); }).join('')
     ));
-    s.push(sec('Стоимость — дома',
+    s.push(sec('Стоимость — тарифы',
       fieldText('Заголовок раздела', 'price.heading') +
       C.price.houses.map(function(h,i){
         return '<div style="border-top:1px dashed #d8d4c4;padding-top:14px;margin-top:14px">' +
-          fieldText('Дом '+(i+1)+' — название', 'price.houses.'+i+'.name') +
-          fieldArea('Дом '+(i+1)+' — описание', 'price.houses.'+i+'.desc') +
-          fieldText('Дом '+(i+1)+' — цена', 'price.houses.'+i+'.price') +
-          fieldImg('Дом '+(i+1)+' — фото', 'price.houses.'+i+'.image') + '</div>';
+          fieldText('Тариф '+(i+1)+' — название', 'price.houses.'+i+'.name') +
+          fieldArea('Тариф '+(i+1)+' — описание', 'price.houses.'+i+'.desc') +
+          fieldText('Тариф '+(i+1)+' — цена', 'price.houses.'+i+'.price') +
+          fieldImg('Тариф '+(i+1)+' — фото', 'price.houses.'+i+'.image') + '</div>';
       }).join('')
     ));
     s.push(sec('Отзывы',
@@ -1338,17 +1385,25 @@ body.admin-available .admin-fab{display:flex}
     });
     document.querySelectorAll('.img-ctrl').forEach(function(ctrl){
       var path = ctrl.getAttribute('data-imgpath');
+      var kind = ctrl.getAttribute('data-kind') || 'image';
+      var thumb = ctrl.querySelector('.thumb');
       ctrl.querySelector('.pickbtn').addEventListener('click', function(){
+        picker.accept = kind === 'media' ? 'image/*,video/mp4,video/webm,video/ogg' : 'image/*';
         pickCb = function(dataUrl){
           set(C, path, dataUrl);
-          ctrl.querySelector('.thumb').style.backgroundImage = 'url('+dataUrl+')';
+          var video = isVideoSrc(dataUrl);
+          thumb.classList.toggle('video-thumb', video);
+          thumb.textContent = video ? '▶' : '';
+          thumb.style.backgroundImage = video ? '' : 'url('+dataUrl+')';
           render();
         };
         picker.click();
       });
       ctrl.querySelector('.clearbtn').addEventListener('click', function(){
         set(C, path, '');
-        ctrl.querySelector('.thumb').style.backgroundImage = '';
+        thumb.classList.remove('video-thumb');
+        thumb.textContent = '';
+        thumb.style.backgroundImage = '';
         render();
       });
     });
@@ -1364,11 +1419,17 @@ body.admin-available .admin-fab{display:flex}
     // выбрасываем служебное поле admin.password из старых дампов, если осталось
     var payload = JSON.parse(JSON.stringify(C));
     if (payload.admin) delete payload.admin;
+    var serialized = JSON.stringify(payload);
+    if (serialized.length > 850000){
+      btn.disabled = false; btn.textContent = orig;
+      toast('Контент слишком большой — уменьшите фото или выберите короче видео');
+      return;
+    }
     fetch('/api/content', {
       method: 'PUT',
       headers: {'Content-Type':'application/json'},
       credentials: 'same-origin',
-      body: JSON.stringify(payload)
+      body: serialized
     }).then(function(r){
       btn.disabled = false; btn.textContent = orig;
       if (r.ok){ render(); toast('Сохранено — изменения видны всем'); }
@@ -1432,17 +1493,9 @@ body.admin-available .admin-fab{display:flex}
   var bookingCard  = document.getElementById('bookingCard');
   var bookingForm  = document.getElementById('bookingForm');
   var bookingSubmit= document.getElementById('bookingSubmit');
+  var policyModal  = document.getElementById('policyModal');
 
-  function openBooking(house){
-    // Заполняем select домов из текущего контента
-    var sel = bookingForm.elements.house;
-    sel.innerHTML = '<option value="">— любой —</option>';
-    (C.price.houses || []).forEach(function(h){
-      var o = document.createElement('option');
-      o.value = h.name; o.textContent = h.name;
-      sel.appendChild(o);
-    });
-    if (house) sel.value = house;
+  function openBooking(){
     bookingCard.classList.remove('success');
     bookingModal.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -1450,31 +1503,49 @@ body.admin-available .admin-fab{display:flex}
   }
   function closeBooking(){
     bookingModal.classList.remove('open');
-    document.body.style.overflow = '';
+    if (!policyModal.classList.contains('open')) document.body.style.overflow = '';
+  }
+  function openPolicy(){
+    policyModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePolicy(){
+    policyModal.classList.remove('open');
+    if (!bookingModal.classList.contains('open')) document.body.style.overflow = '';
   }
 
   // Открытие из любых кнопок с data-open-booking, плюс главные кнопки hero и карточек.
   document.addEventListener('click', function(e){
+    var p = e.target.closest('[data-open-policy]');
+    if (p){
+      e.preventDefault();
+      openPolicy();
+      return;
+    }
     var t = e.target.closest('[data-open-booking]');
     if (t){
       e.preventDefault();
-      openBooking(t.getAttribute('data-house') || '');
+      openBooking();
       return;
     }
     // hero / контакты — у этих кнопок href начинается с #booking — перенаправим.
     var a = e.target.closest('a[href="#booking"]');
-    if (a){ e.preventDefault(); openBooking(''); return; }
-    // карточки домов — клик по карточке открывает с предзаполненным домом
+    if (a){ e.preventDefault(); openBooking(); return; }
+    // карточки тарифов — клик открывает общую форму заявки
     var card = e.target.closest('#houseCards .card');
     if (card){
-      var idx = Array.prototype.indexOf.call(card.parentNode.children, card);
-      var name = (C.price.houses[idx] || {}).name || '';
-      openBooking(name);
+      openBooking();
     }
   });
   document.getElementById('bookingClose').addEventListener('click', closeBooking);
   bookingModal.addEventListener('click', function(e){ if (e.target === bookingModal) closeBooking(); });
-  addEventListener('keydown', function(e){ if (e.key === 'Escape' && bookingModal.classList.contains('open')) closeBooking(); });
+  document.getElementById('policyClose').addEventListener('click', closePolicy);
+  policyModal.addEventListener('click', function(e){ if (e.target === policyModal) closePolicy(); });
+  addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    if (policyModal.classList.contains('open')) closePolicy();
+    else if (bookingModal.classList.contains('open')) closeBooking();
+  });
 
   function showFieldErr(name, on){
     var el = bookingForm.querySelector('[data-err="'+name+'"]');
