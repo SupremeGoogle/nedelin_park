@@ -597,9 +597,15 @@ body.admin-available .admin-fab{display:flex}
     <div class="cards" id="houseCards"></div>
 
     <div class="booking-box rv" id="booking" style="text-align:center">
-      <h3>Готовы забронировать?</h3>
-      <p style="color:#56655b;font-weight:300;font-size:15px;max-width:480px;margin:0 auto 22px">Оставьте заявку — мы перезвоним в течение часа и подберём свободные даты под ваш отдых.</p>
-      <div class="hero-btns" style="justify-content:center;margin:0;opacity:1;animation:none">
+      <h3>Забронировать онлайн</h3>
+      <div id="hr-widget"></div>
+      <script type="module" src="https://homereserve.ru/widget.js"></script>
+      <script type="module">
+        window.homereserve.initWidgetSearch({"token":"0aZm9v25gg"})
+      </script>
+
+      <p style="color:#56655b;font-weight:300;font-size:15px;max-width:480px;margin:24px auto 22px;position:relative;z-index:2">Или оставьте быструю заявку — мы свяжемся с вами:</p>
+      <div class="hero-btns" style="justify-content:center;margin:0;opacity:1;animation:none;position:relative;z-index:2">
         <button type="button" class="btn btn-dark" data-open-booking>Оставить заявку</button>
       </div>
       <svg class="booking-pines" viewBox="0 0 1440 50" preserveAspectRatio="none" aria-hidden="true">
