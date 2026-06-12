@@ -8,7 +8,7 @@ workers_dev = true
 # подставьте сюда полученный id.
 [[kv_namespaces]]
 binding = "ADMINS"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "7a0abc89663b4a6e91ff568e2f481b2b"
 
 # Секреты задаются командой `wrangler secret put <NAME>`:
 #   TELEGRAM_BOT_TOKEN
