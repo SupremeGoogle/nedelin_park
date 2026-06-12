@@ -101,12 +101,47 @@ header.scrolled .nav-toggle span{background:var(--pine)}
 .nav-toggle.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
 .nav-toggle.open span:nth-child(2){opacity:0}
 .nav-toggle.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
-@media(max-width:768px){
+@media(max-width:1024px){
   .nav-logo{font-size:18px}
   .nav-toggle{display:flex}
-  .nav-links{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(10,21,14,.98);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:32px;transform:translateY(-100%);transition:transform .4s cubic-bezier(.16,1,.3,1);z-index:65}
-  .nav-links.open{transform:translateY(0)}
-  .nav-links a{font-size:18px;letter-spacing:.25em;color:var(--cream)!important}
+  .nav-links{
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    background:rgba(13,27,19,0.98);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:36px;
+    transform:translateY(-100%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:transform .5s cubic-bezier(.16,1,.3,1), opacity .5s ease, visibility .5s;
+    z-index:65;
+  }
+  .nav-links.open{
+    transform:translateY(0);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+  .nav-links a{
+    font-family:var(--display);
+    font-size:22px;
+    letter-spacing:.15em;
+    color:var(--cream)!important;
+    text-transform:uppercase;
+    transition:color .3s, transform .3s;
+  }
+  .nav-links a:hover{
+    color:var(--gold)!important;
+    transform:scale(1.05);
+  }
   .nav-toggle.open span{background:var(--cream)!important}
 }
 @media(max-width:380px){
@@ -232,8 +267,7 @@ header.scrolled .nav-toggle span{background:var(--pine)}
 .rev-arrow:active{transform:translateY(-50%) scale(0.95)}
 .rev-arrow.prev{left:-24px}
 .rev-arrow.next{right:-24px}
-@media(max-width:1024px){.rev-arrow.prev{left:4px}.rev-arrow.next{right:4px}}
-@media(max-width:768px){.rev-arrow{display:none}}
+@media(max-width:1024px){.rev-arrow{display:none}}
 .dots{display:flex;gap:10px;justify-content:center;margin-top:22px}
 .dots span{width:8px;height:8px;border-radius:50%;background:#c9c3ae;transition:.3s;cursor:pointer}
 .dots span.on{background:var(--pine);transform:scale(1.25)}
@@ -475,8 +509,11 @@ body.admin-available .admin-fab{display:flex}
       <span data-t="brand.title">Nedelin Park</span>
     </div>
     <nav class="nav-links">
-      <a href="#rent">условия</a>
       <a href="#about">о нас</a>
+      <a href="#rent">условия</a>
+      <a href="#price">стоимость</a>
+      <a href="#reviews">отзывы</a>
+      <a href="#faq">вопросы</a>
       <a href="#contacts">контакты</a>
     </nav>
     <button type="button" class="nav-toggle" id="navToggle" aria-label="Открыть меню">
