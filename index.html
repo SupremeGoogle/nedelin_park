@@ -50,7 +50,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 @media (prefers-reduced-motion: reduce){
   .rv,.rv-l,.rv-r{opacity:1;transform:none;transition:none}
   *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  #leafLayer,#flight,.scroll-hint{display:none!important}
+  #leafLayer,#flightPath,#flight,.scroll-hint{display:none!important}
 }
 
 /* ---------- падающие листья по всему сайту ---------- */
@@ -61,7 +61,10 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 @keyframes leafSway{from{transform:translateX(-26px) rotate(-50deg)}to{transform:translateX(26px) rotate(60deg)}}
 
 /* ---------- маршрут через весь сайт: лист летит по линии при скролле ---------- */
+#flightPath{position:absolute;top:0;left:0;width:100%;z-index:29;pointer-events:none;overflow:visible}
 #flight{position:fixed;top:0;left:0;width:80px;height:80px;z-index:30;pointer-events:none;overflow:visible;contain:layout paint;will-change:transform}
+#flightBase{fill:none;stroke:#b3955c;stroke-width:1.6;stroke-dasharray:2 9;stroke-linecap:round;opacity:.4}
+#flightProg{fill:none;stroke:#d9b97c;stroke-width:2;stroke-linecap:round;opacity:.9}
 #flightLeaf{will-change:transform}
 #flightLeaf .leaf-flutter{animation:flutter 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
 @keyframes flutter{from{transform:rotate(-14deg) scale(1)}to{transform:rotate(16deg) scale(1.08)}}
@@ -430,6 +433,7 @@ body.admin-available .admin-fab{display:flex}
 <div id="leafLayer" aria-hidden="true"></div>
 
 <!-- маршрут листа через весь сайт (строится скриптом) -->
+<svg id="flightPath" aria-hidden="true"></svg>
 <svg id="flight" aria-hidden="true"></svg>
 
 <!-- ===================== HEADER ===================== -->
@@ -984,13 +988,63 @@ body.admin-available .admin-fab{display:flex}
     }
   })();
 
-  /* ---------- лёгкий лист, привязанный к прогрессу скролла ---------- */
+  /* ---------- маршрут через сайт + лёгкий летящий лист ---------- */
+  var SECTION_IDS = ['about','rent','price','reviews','faq','contacts'];
+  var flightPathSvg = document.getElementById('flightPath');
   var flightSvg = document.getElementById('flight');
-  var flightLeaf, flightLen = 0, leafL = 0, targetL = 0, flightAnim = false, lastDocH = 0;
+  var flightProg, flightLeaf, flightLen = 0, leafL = 0, targetL = 0,
+      flightAnim = false, lastDocH = 0, flightDocH = 1, flightTable = null;
 
   function buildFlight(){
     if (REDUCED) return;
-    lastDocH = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    var docH = document.documentElement.scrollHeight;
+    var W = document.documentElement.clientWidth;
+    flightDocH = Math.max(1, docH);
+    lastDocH = Math.max(1, docH - innerHeight);
+
+    flightPathSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + docH);
+    flightPathSvg.setAttribute('width', W);
+    flightPathSvg.setAttribute('height', docH);
+    flightPathSvg.style.height = docH + 'px';
+
+    var margin = Math.max(30, W * 0.06);
+    var pts = [{x: W/2, y: innerHeight * 0.92}];
+    SECTION_IDS.forEach(function(id, i){
+      var el = document.getElementById(id);
+      if (!el) return;
+      pts.push({
+        x: (i % 2 === 0) ? W - margin : margin,
+        y: el.offsetTop + Math.min(el.offsetHeight * 0.45, 320)
+      });
+    });
+    pts.push({x: W/2, y: docH - 70});
+
+    var d = 'M' + pts[0].x + ' ' + pts[0].y;
+    for (var i = 1; i < pts.length; i++){
+      var a = pts[i-1], b = pts[i], my = (a.y + b.y) / 2;
+      d += ' C ' + a.x + ' ' + my + ', ' + b.x + ' ' + my + ', ' + b.x + ' ' + b.y;
+    }
+    flightPathSvg.innerHTML =
+      '<path id="flightBase" d="' + d + '"/>' +
+      '<path id="flightProg" d="' + d + '"/>';
+    flightProg = document.getElementById('flightProg');
+    flightLen = flightProg.getTotalLength();
+    flightProg.style.strokeDasharray = flightLen;
+    flightProg.style.strokeDashoffset = Math.max(0, flightLen - leafL);
+
+    var STEPS = 220;
+    flightTable = new Array(STEPS + 1);
+    for (var s = 0; s <= STEPS; s++){
+      var L = (s / STEPS) * flightLen;
+      var pt = flightProg.getPointAtLength(L);
+      flightTable[s] = { L: L, x: pt.x, y: pt.y };
+    }
+    for (var s2 = 0; s2 <= STEPS; s2++){
+      var prev = flightTable[Math.max(0, s2 - 1)];
+      var next = flightTable[Math.min(STEPS, s2 + 1)];
+      flightTable[s2].ang = Math.atan2(next.y - prev.y, next.x - prev.x) * 180 / Math.PI + 90;
+    }
+
     flightSvg.setAttribute('viewBox', '0 0 80 80');
     flightSvg.setAttribute('width', 80);
     flightSvg.setAttribute('height', 80);
@@ -1004,46 +1058,50 @@ body.admin-available .admin-fab{display:flex}
       '</g>';
 
     flightLeaf = document.getElementById('flightLeaf');
-    flightLen = 1;
-    leafL = Math.max(0, Math.min(1, leafL));
+    leafL = Math.max(0, Math.min(flightLen, leafL));
     placeLeaf(leafL);
   }
 
-  // Позиция считается простой математикой, без SVG-path и getPointAtLength.
+  // Позиция берётся из таблицы маршрута: getPointAtLength вызывается только при сборке.
   function sampleAt(L){
-    var p = Math.max(0, Math.min(1, L || 0));
-    var xRange = Math.max(0, innerWidth - 96);
-    var yRange = Math.max(0, innerHeight - 96);
-    var sway = Math.sin(p * Math.PI * 3.4);
+    if (!flightTable || !flightLen) return { x: 40, y: 40, ang: 0 };
+    var n = flightTable.length - 1;
+    var f = Math.max(0, Math.min(1, L / flightLen)) * n;
+    var i = f | 0;
+    if (i >= n) return flightTable[n];
+    var k = f - i;
+    var a = flightTable[i], b = flightTable[i + 1];
     return {
-      x: 16 + xRange * (0.5 + sway * 0.34),
-      y: 12 + yRange * p,
-      ang: 28 + Math.sin(p * Math.PI * 6) * 24
+      x: a.x + (b.x - a.x) * k,
+      y: a.y + (b.y - a.y) * k,
+      ang: a.ang + (b.ang - a.ang) * k
     };
   }
 
   function placeLeaf(L){
     var p = sampleAt(L);
-    flightSvg.style.transform = 'translate3d(' + p.x + 'px,' + p.y + 'px,0)';
+    flightSvg.style.transform = 'translate3d(' + (p.x - 40) + 'px,' + (p.y - scrollY - 40) + 'px,0)';
+    if (flightProg) flightProg.style.strokeDashoffset = Math.max(0, flightLen - L);
     flightLeaf.setAttribute('transform', 'translate(40 40) rotate(' + p.ang + ')');
   }
 
   function flightLoop(){
     var diff = targetL - leafL;
-    if (Math.abs(diff) < .002){
+    if (Math.abs(diff) < .5){
       leafL = targetL;
       placeLeaf(leafL);
       flightAnim = false;
       return;
     }
-    leafL += diff * .18; // мягкая инерция полёта
+    leafL += diff * .14; // мягкая инерция полёта
     placeLeaf(leafL);
     requestAnimationFrame(flightLoop);
   }
 
   function flightUpdate(y){
     if (REDUCED || !flightLen) return;
-    targetL = Math.min(1, Math.max(0, y / lastDocH));
+    var progressY = y + innerHeight * .55;
+    targetL = Math.min(flightLen, Math.max(0, (progressY / flightDocH) * flightLen));
     if (!flightAnim){ flightAnim = true; requestAnimationFrame(flightLoop); }
   }
 
