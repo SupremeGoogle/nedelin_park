@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nedelin Park — сферы у леса | Калининград</title>
 <meta name="description" content="Nedelin Park — уютные сферические дома у леса под Калининградом. Тишина, природа и комфорт.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23142419'/%3E%3Cpath d='M16 5 8 17h4l-5 9h18l-5-9h4L16 5z' fill='none' stroke='%23b3955c' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23142419'/%3E%3Cpath d='M16 5 8 17h4l-5 9h18l-5-9h4L16 5z' fill='none' stroke='%23b3955c' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#142419">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -142,12 +145,6 @@ header.scrolled .nav-links a{color:var(--ink)}
 .treeline.flip{transform:scaleY(-1)}
 
 /* птицы */
-.bird{position:absolute;z-index:3;pointer-events:none;animation:fly linear forwards}
-.bird svg{width:100%;height:100%}
-.bird path{animation:flap .5s ease-in-out infinite alternate;transform-origin:center}
-@keyframes fly{from{transform:translateX(-10vw)}to{transform:translateX(115vw)}}
-@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.55)}}
-
 /* ---------- about ---------- */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 @media(max-width:840px){.about-grid{grid-template-columns:1fr}}
@@ -958,29 +955,14 @@ body.admin-available .admin-fab{display:flex}
     }
   })();
 
-  /* ---------- птицы: иногда пролетают ---------- */
-  (function birds(){
-    if (REDUCED) return;
-    function spawn(){
-      var b = document.createElement('div');
-      b.className = 'bird';
-      var top = 8 + Math.random()*22;
-      var size = 16 + Math.random()*12;
-      var dur = 14 + Math.random()*10;
-      b.style.cssText = 'position:fixed;top:'+top+'vh;left:0;width:'+size+'px;height:'+(size*0.5)+'px;animation-duration:'+dur+'s;z-index:38';
-      b.innerHTML = '<svg viewBox="0 0 24 12"><path d="M2 8 Q 7 1, 12 7 Q 17 1, 22 8" fill="none" stroke="#3c4a40" stroke-width="1.4" stroke-linecap="round"/></svg>';
-      document.body.appendChild(b);
-      setTimeout(function(){ b.remove(); }, dur*1000 + 500);
-    }
-    setTimeout(spawn, 3000);
-    setInterval(function(){ if (Math.random() < .6) spawn(); }, 16000);
-  })();
-
   /* ---------- маршрут через весь сайт: лист летит по линии ---------- */
   var SECTION_IDS = ['about','rent','price','reviews','faq','contacts'];
   var flightSvg = document.getElementById('flight');
   var flightProg, flightLeaf, flightLen = 0, leafL = 0, targetL = 0,
       flightDots = [], flightAnim = false, lastDocH = 0;
+  // Предвычисленная таблица [L, x, y, angle] — выбираем один раз при сборке маршрута,
+  // потом scroll-обработчик не дёргает дорогой getPointAtLength на каждом кадре.
+  var flightTable = null;
   var NS = 'http://www.w3.org/2000/svg';
 
   function buildFlight(){
@@ -1031,12 +1013,28 @@ body.admin-available .admin-fab{display:flex}
     flightProg.style.strokeDasharray = flightLen;
     flightProg.style.strokeDashoffset = flightLen;
 
-    // чекпоинты секций на линии (поиск длины по высоте точки)
+    // Сэмплируем путь один раз: ~240 точек, шаг по длине.
+    // На каждом кадре теперь только массивный lookup + интерполяция.
+    var STEPS = 240;
+    flightTable = new Array(STEPS + 1);
+    for (var s = 0; s <= STEPS; s++){
+      var L = (s / STEPS) * flightLen;
+      var pt = flightProg.getPointAtLength(L);
+      flightTable[s] = { L: L, x: pt.x, y: pt.y };
+    }
+    // углы по соседним точкам
+    for (var s2 = 0; s2 <= STEPS; s2++){
+      var a = flightTable[Math.max(0, s2 - 1)];
+      var b = flightTable[Math.min(STEPS, s2 + 1)];
+      flightTable[s2].ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI + 90;
+    }
+
+    // чекпоинты секций на линии
     var dotsG = document.getElementById('flightDots');
     flightDots = [];
     pts.slice(1, -1).forEach(function(p){
       var L = lengthAtY(p.y);
-      var pos = flightProg.getPointAtLength(L);
+      var pos = sampleAt(L);
       var ring = document.createElementNS(NS, 'circle');
       ring.setAttribute('class', 'flight-ring');
       ring.setAttribute('cx', pos.x); ring.setAttribute('cy', pos.y); ring.setAttribute('r', 9);
@@ -1051,22 +1049,37 @@ body.admin-available .admin-fab{display:flex}
     placeLeaf(leafL);
   }
 
-  // бинарный поиск длины дуги по координате Y (линия монотонна по вертикали)
+  // Бинарный поиск по таблице (y монотонен), интерполяция между двумя точками.
   function lengthAtY(y){
-    var lo = 0, hi = flightLen;
-    for (var i = 0; i < 22; i++){
-      var mid = (lo + hi) / 2;
-      if (flightProg.getPointAtLength(mid).y < y) lo = mid; else hi = mid;
+    if (!flightTable) return 0;
+    var lo = 0, hi = flightTable.length - 1;
+    while (hi - lo > 1){
+      var mid = (lo + hi) >> 1;
+      if (flightTable[mid].y < y) lo = mid; else hi = mid;
     }
-    return (lo + hi) / 2;
+    var a = flightTable[lo], b = flightTable[hi];
+    var dy = b.y - a.y;
+    var k = dy === 0 ? 0 : (y - a.y) / dy;
+    return a.L + (b.L - a.L) * Math.max(0, Math.min(1, k));
+  }
+
+  // Позиция и угол по длине L — линейная интерполяция по таблице.
+  function sampleAt(L){
+    if (!flightTable) return { x:0, y:0, ang:0 };
+    var n = flightTable.length - 1;
+    var f = L / flightLen * n;
+    var i = f | 0;
+    if (i >= n) return flightTable[n];
+    if (i < 0) return flightTable[0];
+    var k = f - i;
+    var a = flightTable[i], b = flightTable[i + 1];
+    return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, ang: a.ang + (b.ang - a.ang) * k };
   }
 
   var sparkT = 0;
   function placeLeaf(L){
-    var p = flightProg.getPointAtLength(L);
-    var ahead = flightProg.getPointAtLength(Math.min(L + 2, flightLen));
-    var ang = Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180 / Math.PI + 90;
-    flightLeaf.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') rotate(' + ang + ')');
+    var p = sampleAt(L);
+    flightLeaf.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') rotate(' + p.ang + ')');
     flightProg.style.strokeDashoffset = Math.max(0, flightLen - L);
 
     // чекпоинты: вспышка при пролёте
