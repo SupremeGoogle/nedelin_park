@@ -85,6 +85,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.15}
 /* ---------- header ---------- */
 header{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .4s,box-shadow .4s}
 header.scrolled{background:rgba(251,249,243,.94);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(20,36,25,.08)}
+header.menu-open{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
 .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
 .nav-logo{font-family:var(--display);font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);transition:color .4s;cursor:pointer;display:flex;align-items:center;gap:10px;white-space:nowrap}
 .nav-logo svg{width:20px;height:20px;stroke:var(--gold)}
@@ -1042,17 +1043,22 @@ body.admin-available .admin-fab{display:flex}
   var header = document.getElementById('header');
   var navToggle = document.getElementById('navToggle');
   var navLinks = document.querySelector('.nav-links');
+  function setMenuState(open){
+    if (navToggle && navLinks) {
+      navToggle.classList.toggle('open', open);
+      navLinks.classList.toggle('open', open);
+      if (header) header.classList.toggle('menu-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+  }
   if (navToggle && navLinks) {
     navToggle.addEventListener('click', function(){
-      var open = navToggle.classList.toggle('open');
-      navLinks.classList.toggle('open', open);
-      document.body.style.overflow = open ? 'hidden' : '';
+      var open = !navLinks.classList.contains('open');
+      setMenuState(open);
     });
     navLinks.querySelectorAll('a').forEach(function(link){
       link.addEventListener('click', function(){
-        navToggle.classList.remove('open');
-        navLinks.classList.remove('open');
-        document.body.style.overflow = '';
+        setMenuState(false);
       });
     });
   }
@@ -1766,9 +1772,7 @@ body.admin-available .admin-fab{display:flex}
   addEventListener('keydown', function(e){
     if (e.key !== 'Escape') return;
     if (navLinks && navLinks.classList.contains('open')) {
-      navToggle.classList.remove('open');
-      navLinks.classList.remove('open');
-      document.body.style.overflow = '';
+      setMenuState(false);
     }
     else if (policyModal.classList.contains('open')) closePolicy();
     else if (bookingModal.classList.contains('open')) closeBooking();
