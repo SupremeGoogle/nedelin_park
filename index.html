@@ -268,7 +268,11 @@ header.scrolled .nav-toggle span{background:var(--pine)}
 .rev-arrow:active{transform:translateY(-50%) scale(0.95)}
 .rev-arrow.prev{left:-24px}
 .rev-arrow.next{right:-24px}
-@media(max-width:1024px){.rev-arrow{display:none}}
+@media(max-width:1024px){
+  .rev-arrow{display:none}
+  .rev-track{gap:16px}
+  .rev-card{flex:0 0 78%;padding:24px}
+}
 .dots{display:flex;gap:10px;justify-content:center;margin-top:22px}
 .dots span{width:8px;height:8px;border-radius:50%;background:#c9c3ae;transition:.3s;cursor:pointer}
 .dots span.on{background:var(--pine);transform:scale(1.25)}
@@ -574,7 +578,6 @@ body.admin-available .admin-fab{display:flex}
     <p class="hero-sub" data-t="hero.subtitle"></p>
     <div class="hero-btns">
       <a href="#booking" class="btn btn-solid" data-t="hero.btnBook"></a>
-      <a href="#contacts" class="btn" data-t="hero.btnWrite"></a>
     </div>
   </div>
   <div class="scroll-hint">листайте вниз</div>
