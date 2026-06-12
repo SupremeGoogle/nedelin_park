@@ -679,7 +679,7 @@ body.admin-available .admin-fab{display:flex}
 
   <div class="admin-body" id="adminBody" style="display:none">
     <div class="admin-note">
-      Меняйте любые тексты, фото и контакты, нажимайте <b>«Сохранить»</b>. Если сайт сохраняет через GitHub, изменения появятся после деплоя — обычно примерно через минуту.
+      Меняйте любые тексты, фото и контакты, нажимайте <b>«Сохранить»</b>. Изменения появятся после деплоя — обычно примерно через минуту.
     </div>
     <div id="adminSections"></div>
   </div>
@@ -1510,7 +1510,7 @@ body.admin-available .admin-fab{display:flex}
         }
       }
       else if (result.status === 401){ toast('Сессия истекла — войдите снова'); location.reload(); }
-      else if (result.status === 413){ toast('Размер данных слишком велик (лимит 900 КБ для KV / 4.2 МБ для GitHub). Уменьшите видео/фото.'); }
+      else if (result.status === 413){ toast('Размер данных слишком велик (лимит 900 КБ / 4.2 МБ). Уменьшите видео/фото.'); }
       else if (result.data && result.data.error === 'storage_not_configured'){ toast('Нужно настроить GITHUB_TOKEN или KV для сохранения'); }
       else if (result.data && result.data.error === 'github_write_failed'){ toast('GitHub не принял сохранение — проверьте токен и доступ к репозиторию'); }
       else { toast('Не удалось сохранить'); }
