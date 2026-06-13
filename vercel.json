@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/disabled" }
+    { "source": "/",         "destination": "/api/disabled" },
+    { "source": "/:path*",   "destination": "/api/disabled" }
   ],
   "redirects": [
     { "source": "/admin", "destination": "/#admin", "permanent": false },
