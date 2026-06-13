@@ -8,3 +8,4 @@ node_modules/
 worker/.wrangler/
 worker/.dev.vars
 .vercel
+index.full.html.bak

@@ -2,12 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/",         "destination": "/api/disabled" },
-    { "source": "/:path*",   "destination": "/api/disabled" }
+    { "source": "/api/booking",       "destination": "/api/disabled" },
+    { "source": "/api/content",       "destination": "/api/disabled" },
+    { "source": "/api/admin/:path*",  "destination": "/api/disabled" }
   ],
   "redirects": [
-    { "source": "/admin", "destination": "/#admin", "permanent": false },
-    { "source": "/admin/", "destination": "/#admin", "permanent": false }
+    { "source": "/admin",  "destination": "/", "permanent": false },
+    { "source": "/admin/", "destination": "/", "permanent": false }
   ],
   "headers": [
     {
